@@ -3,9 +3,11 @@ export const data = [
     {date : "jan 1 2026",
         id:1,
         header: "This is Nutrition blog, the home of good meals",
-        desc : " this is a blog about healthy meals that can refresh and make you stay healthy",
+        desc :  `This is a blog about healthy meals that can refresh and make you stay healthy
+        . Healthy meals Arsenal;t far away thanks to nutriblog, your home of nutritious meals`,
       image : "/images/eba.jpg",
-      body: `The standard Lorem Ipsum passage, used since the 1500s Lorem 
+      cat: "snack",
+      body:`The standard Lorem Ipsum passage, used since the 1500s Lorem 
       ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor 
       incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis 
       nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 
@@ -41,8 +43,10 @@ export const data = [
      {date : "jan 1 2026",
         id:2,
         header: "This is Nutrition blog, the home of good meals",
-        desc : " this is a blog about healthy meals that can refresh and make you stay healthy",
+        desc : `This is a blog about healthy meals that can refresh and make you stay healthy
+        . Healthy meals Arsenal;t far away thanks to nutriblog, your home of nutritious meals`,
       image: "/images/chicken.jpg",
+      cat: "solid",
       body: `The standard Lorem Ipsum passage, used since the 1500s Lorem 
       ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor 
       incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis 
@@ -79,8 +83,10 @@ export const data = [
      {date : "jan 1 2026",
         id:3,
         header: "This is Nutrition blog, the home of good meals",
-        desc : " this is a blog about healthy meals that can refresh and make you stay healthy",
+        desc : `This is a blog about healthy meals that can refresh and make you stay healthy
+        . Healthy meals Arsenal;t far away thanks to nutriblog, your home of nutritious meals`,
       image : "/images/fruits.webp",
+      cat: "snack",
       body: `The standard Lorem Ipsum passage, used since the 1500s Lorem 
       ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor 
       incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis 
@@ -117,8 +123,10 @@ export const data = [
      {date : "jan 1 2026",
         id:4,
         header: "This is Nutrition blog, the home of good meals",
-        desc : " this is a blog about healthy meals that can refresh and make you stay healthy",
+        desc : `This is a blog about healthy meals that can refresh and make you stay healthy
+        . Healthy meals Arsenal;t far away thanks to nutriblog, your home of nutritious meals`,
       image : "/images/fufu.jpg",
+      cat: "liquid",
       body: `The standard Lorem Ipsum passage, used since the 1500s Lorem 
       ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor 
       incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis 
@@ -155,8 +163,10 @@ export const data = [
      {date : "jan 1 2026",
         id:5,
         header: "This is Nutrition blog, the home of good meals",
-        desc : " this is a blog about healthy meals that can refresh and make you stay healthy",
+        desc : `This is a blog about healthy meals that can refresh and make you stay healthy
+        . Healthy meals Arsenal;t far away thanks to nutriblog, your home of nutritious meals`,
       image : "/images/noodles.jpg",
+      cat: "solid",
       body: `The standard Lorem Ipsum passage, used since the 1500s Lorem 
       ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor 
       incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis 
@@ -193,8 +203,10 @@ export const data = [
      {data : "jan 1 2026",
         id:6,
         header: "This is Nutrition blog, the home of good meals",
-        desc : " this is a blog about healthy meals that can refresh and make you stay healthy",
+        desc : `This is a blog about healthy meals that can refresh and make you stay healthy
+        . Healthy meals Arsenal;t far away thanks to nutriblog, your home of nutritious meals`,
       image : "/images/varieties.avif",
+      cat: "liquid",
       body: `The standard Lorem Ipsum passage, used since the 1500s Lorem 
       ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor 
       incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis 
