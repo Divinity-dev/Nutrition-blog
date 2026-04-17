@@ -8,6 +8,7 @@ import { motion } from "framer-motion";
 import SearchIcon from "@mui/icons-material/Search";
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
+import { useSelector } from "react-redux";
 
 /* ================= CARD ================= */
 export const Card = ({ item }) => (
@@ -46,6 +47,9 @@ export const Card = ({ item }) => (
 const Blog = () => {
   const latest = data.slice(0, 3);
   const categories = [...new Set(data.map(item => item.cat))];
+
+  const user = useSelector(state => state.auth?.user)
+  console.log(user)
 
   const itemsPerPage = 7;
   const [currentPage, setCurrentPage] = useState(1);
