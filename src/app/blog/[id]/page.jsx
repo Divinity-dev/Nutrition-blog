@@ -2,9 +2,9 @@
 
 import React, { useState } from "react";
 import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
-import { data } from "../../components/Data";
+import { data } from "../../../components/Data";
 import Image from "next/image";
-import { Card } from "../../components/Blog";
+import { Card } from "../../../components/Blog";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import Link from "next/link";
