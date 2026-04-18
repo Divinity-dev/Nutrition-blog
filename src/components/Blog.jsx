@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect} from "react";
 import { data } from "./Data";
 import Image from "next/image";
 import Link from "next/link";
@@ -9,6 +9,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import { useSelector } from "react-redux";
+import axios from "axios";
 
 /* ================= CARD ================= */
 export const Card = ({ item }) => (
@@ -26,10 +27,10 @@ export const Card = ({ item }) => (
 
     {/* Content */}
     <div className="flex flex-col flex-1 gap-2">
-      <span className="font-semibold">{item.date}</span>
+      <span className="font-semibold">{item.createdAt}</span>
 
       <h2 className="text-xl md:text-2xl font-bold line-clamp-2">
-        {item.header}
+        {item.title}
       </h2>
 
       <p className="text-gray-800 line-clamp-3 flex-1">
@@ -45,18 +46,21 @@ export const Card = ({ item }) => (
 
 /* ================= BLOG ================= */
 const Blog = () => {
-  const latest = data.slice(0, 3);
+
+   const [blogs, setBlogs] = useState([]);
+  const latest = blogs?.slice(0, 3);
   const categories = [...new Set(data.map(item => item.cat))];
 
   const user = useSelector(state => state.auth?.user)
-  console.log(user)
+  
 
   const itemsPerPage = 7;
   const [currentPage, setCurrentPage] = useState(1);
-  const totalPages = Math.ceil(data.length / itemsPerPage);
+ 
+  const totalPages = Math.ceil(blogs.length / itemsPerPage);
 
   const startIndex = (currentPage - 1) * itemsPerPage;
-  const currentItems = data.slice(startIndex, startIndex + itemsPerPage);
+  const currentItems = blogs?.slice(startIndex, startIndex + itemsPerPage);
   const handleNext = () => {
   if (currentPage < totalPages) {
     setCurrentPage(prev => prev + 1);
@@ -89,25 +93,51 @@ const handlePrev = () => {
     },
   };
 
+  useEffect(() => {
+  const getBlogs = async () => {
+    try {
+      const blogs = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/post/posts`);
+      setBlogs(blogs.data);
+      console.log(blogs.data)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+getBlogs();
+}, []);
+
+console.log(blogs)
+  
+
+  
+
   return (
-    <div className="px-4 md:px-10 py-6">
+    <div className="px-4 md:px-10 py-6 overflow-x-hidden">
 
       {/* ================= HEADER ================= */}
-      <h1 className="text-xl md:text-2xl mb-5 font-semibold">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-4">
+        <h1 className="text-xl md:text-2xl mb-5 font-semibold">
         Latest Blog
       </h1>
+      {user && (
+      <Link href={""}>
+        <button className="p-3 w-24 rounded-xl bg-orangeDark text-white">
+          Create
+        </button></Link>
+      )}
+      </div>
 
       {/* ================= FEATURED ================= */}
       <div className="flex flex-col lg:flex-row gap-6 items-stretch">
 
         <motion.div whileHover={{ scale: 1.02 }} className="flex-1 flex">
           <Link
-            href={`/blog/${data[0].id}`}
+            href={`/blog/${blogs[0]?._id}`}
             className="flex flex-col gap-4 p-5 rounded-2xl flex-1 border-2 border-gray-300"
           >
             <div className="relative w-full h-64">
               <Image
-                src={data[0].image}
+                src={blogs[0]?.image}
                 fill
                 className="object-cover rounded-xl"
                 alt="blog image"
@@ -115,12 +145,12 @@ const handlePrev = () => {
             </div>
 
             <h2 className="text-xl md:text-2xl lg:text-4xl font-semibold">
-              {data[0].header}
+              {blogs[0]?.title}
             </h2>
 
-            <span>{data[0].date}</span>
+            <span>{blogs[0]?.createdAt}</span>
 
-            <p>{data[0].desc}</p>
+            <p>{blogs[0]?.desc}</p>
 
             <span className="text-blue-800">see more</span>
           </Link>
@@ -130,7 +160,7 @@ const handlePrev = () => {
         <div className="flex flex-col flex-1 gap-6">
           {latest.map((item, index) => (
             <motion.div
-              key={item.id}
+              key={item._id}
               initial={index % 2 === 0 ? "hiddenLeft" : "hiddenRight"}
               whileInView="visible"
               viewport={{ once: true, amount: 0.3 }}
@@ -148,12 +178,12 @@ const handlePrev = () => {
 
               <div className="flex flex-col gap-2 flex-1">
                 <h2 className="text-lg md:text-xl lg:text-2xl font-semibold">
-                  {item.header}
+                  {item.title}
                 </h2>
 
-                <span>{item.date}</span>
+                <span>{item.createdAt}</span>
 
-                <Link href={`/blog/${item.id}`} className="text-blue-800">
+                <Link href={`/blog/${item._id}`} className="text-blue-800">
                   see more
                 </Link>
               </div>
@@ -196,7 +226,7 @@ const handlePrev = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {currentItems.slice(0, 2).map((item, index) => (
             <motion.div
-              key={item.id}
+              key={item._id}
               initial={index % 2 === 0 ? "hiddenLeft" : "hiddenRight"}
               whileInView="visible"
               viewport={{ once: true, amount: 0.3 }}
@@ -214,7 +244,7 @@ const handlePrev = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {currentItems.slice(2, 5).map((item, index) => (
             <motion.div
-              key={item.id}
+              key={item._id}
               initial={index % 2 === 0 ? "hiddenLeft" : "hiddenRight"}
               whileInView="visible"
               viewport={{ once: true, amount: 0.3 }}
@@ -232,7 +262,7 @@ const handlePrev = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {currentItems.slice(5, 7).map((item, index) => (
             <motion.div
-              key={item.id}
+              key={item._id}
               initial={index % 2 === 0 ? "hiddenLeft" : "hiddenRight"}
               whileInView="visible"
               viewport={{ once: true, amount: 0.3 }}

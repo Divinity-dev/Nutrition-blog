@@ -9,6 +9,7 @@ import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
+import { useSelector } from "react-redux";
 
 const page = () => {
   const blog = data[0];
@@ -61,7 +62,7 @@ const page = () => {
     }
   };
 
-  
+  const user = useSelector(state => state.auth?.user)
 
   /* ===== animations ===== */
   const fadeUp = {
@@ -85,10 +86,18 @@ const page = () => {
   return (
     <div className="px-4 md:px-10 py-6">
 
-      {/* BACK */}
+     <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-4">
+       {/* BACK */}
       <Link href="/" className="inline-block mb-4">
         <KeyboardBackspaceIcon className="cursor-pointer" />
       </Link>
+
+       {user && (
+        <button className="p-3 w-24 rounded-xl bg-orangeDark text-white">
+          Edit
+        </button>
+      )}
+     </div>
 
       {/* HEADER */}
       <motion.div
