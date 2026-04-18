@@ -120,7 +120,7 @@ const RichTextEditor = ({ value, onChange }) => {
       </div>
 
       {/* ================= EDITOR ================= */}
-      <div className="p-6 min-h-[220px] prose prose-sm sm:prose-base max-w-none focus-within:outline-none">
+      <div className="p-6 min-h-55 prose prose-sm sm:prose-base max-w-none focus-within:outline-none">
 
         <EditorContent editor={editor} />
 

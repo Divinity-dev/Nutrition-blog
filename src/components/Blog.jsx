@@ -120,9 +120,9 @@ console.log(blogs)
         Latest Blog
       </h1>
       {user && (
-      <Link href={""}>
-        <button className="p-3 w-24 rounded-xl bg-orangeDark text-white">
-          Create
+      <Link href={"/create"}>
+        <button className="mt-4 bg-black text-white py-2 px-4 rounded-lg hover:bg-gray-800 transition-colors">
+          Create blog
         </button></Link>
       )}
       </div>
