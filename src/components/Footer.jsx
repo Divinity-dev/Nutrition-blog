@@ -1,6 +1,24 @@
+"use client"
+
 import Link from "next/link";
+import axios from "axios";
+import { useState } from "react";
+import { toast } from "react-toastify";
 
 export default function Footer() {
+const [email, setEmail] = useState('')
+
+const handleSubmit = async (e)=>{
+  e.preventDefault();
+  try {
+    const res = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/subscribers/subscribe`,{email})
+    toast(res.data)
+  } catch (error) {
+    console.log(error)
+    toast(error.message)
+  }
+}
+
   return (
     <footer className="bg-gray-900 text-gray-300 mt-16">
       <div className="max-w-6xl mx-auto px-4 py-10 grid gap-10 md:grid-cols-4">
@@ -43,11 +61,13 @@ export default function Footer() {
             Get weekly nutrition tips straight to your inbox.
           </p>
 
-          <form className="flex flex-col sm:flex-row gap-2">
+          <form className="flex flex-col sm:flex-row gap-2"
+          onSubmit={handleSubmit}>
             <input
               type="email"
+              onChange={(e)=>{setEmail(e.target.value)}}
               placeholder="Enter your email"
-              className="px-3 py-2 rounded-md text-black w-full"
+              className="px-3 py-2 rounded-md text-black w-full bg-white"
             />
             <button
               type="submit"

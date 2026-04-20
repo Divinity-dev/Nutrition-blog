@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
 import { data } from "../../../components/Data";
 import Image from "next/image";
@@ -10,9 +10,43 @@ import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSelector } from "react-redux";
+import axios from "axios";
+import { useParams } from "next/navigation";
+
 
 const page = () => {
   const blog = data[0];
+  const [Blog, setBlog] = useState({})
+  const [blogs, setBlogs] = useState([]);
+const  {slug } = useParams();
+
+
+  useEffect(() => {
+  const getBlogs = async () => {
+    try {
+      const blogs = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/post/posts`);
+      setBlogs(blogs.data);
+      console.log(blogs.data)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+getBlogs();
+}, []);
+  useEffect(()=>{
+    const getBlog = async ()=>{
+      try {
+        const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/post/${slug}`)
+        setBlog(res.data)
+              console.log(res.data)
+      } catch (error) {
+        console.log(error)
+      }
+    };
+    getBlog()
+  }, [slug])
+
+
 
   const headers = Array(7).fill(
     "This is a beautiful blog for nutrition"
@@ -85,17 +119,17 @@ const page = () => {
 
   return (
     <div className="px-4 md:px-10 py-6">
-
-     <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-4">
+<div className="flex justify-between items-center mb-10 gap-4">
        {/* BACK */}
-      <Link href="/" className="inline-block mb-4">
+      <Link href="/" className="inline-block ">
         <KeyboardBackspaceIcon className="cursor-pointer" />
       </Link>
 
-       {user && (
-        <button className="p-3 w-24 rounded-xl bg-orangeDark text-white">
-          Edit
-        </button>
+        {user && (
+      <Link href={`/create?slug=${slug}`}>
+        <button className="mt-4 bg-black text-white py-2 px-4 rounded-lg hover:bg-gray-800 transition-colors">
+          Edit blog
+        </button></Link>
       )}
      </div>
 
@@ -109,23 +143,23 @@ const page = () => {
         <div className="flex flex-col items-center mx-auto gap-4 max-w-3xl text-center">
 
           <h1 className="text-2xl md:text-4xl font-bold text-blue-950">
-            {blog.header}
+            {Blog?.title}
           </h1>
 
           <p className="text-gray-700 text-sm md:text-base">
-            {blog.desc}
+            {Blog?.desc}
           </p>
 
           <h3 className="text-sm font-medium">
             By Nutriblog |{" "}
             <span className="text-gray-500">
-              Last updated Jan 1, 2026
+              Last updated {Blog?.createdAt}
             </span>
           </h3>
 
           <div className="relative w-full h-52 md:h-80">
             <Image
-              src={blog.image}
+              src={Blog.image}
               fill
               className="object-cover rounded-2xl"
               alt=""
@@ -144,7 +178,12 @@ const page = () => {
           animate="visible"
           className="flex-1 text-sm md:text-base leading-relaxed"
         >
-          {blog.body}
+       {Blog?.content?.map((item, index) => (
+  <div key={index} id={`section-${index}`} className="mb-6 scroll-mt-24">
+    <h2 className="font-bold text-lg">{item.header}</h2>
+    <div dangerouslySetInnerHTML={{ __html: item.text }} />
+  </div>
+))}
         </motion.div>
 
         {/* SIDEBAR */}
@@ -154,14 +193,22 @@ const page = () => {
           animate="visible"
           className="md:w-72 w-full md:sticky md:top-10 flex flex-col gap-4"
         >
-          <div className="p-4 bg-gray-100 rounded-xl text-sm">
-            {headers.map((item, index) => (
-              <div key={index} className="flex gap-2 items-center mb-2">
-                <div className="w-2 h-2 bg-blue-950 rounded-sm" />
-                {item}
-              </div>
-            ))}
-          </div>
+        <div className="p-4 bg-gray-100 rounded-xl text-sm">
+  {Blog?.content?.map((item, index) => (
+    <div
+      key={index}
+      onClick={() =>
+        document
+          .getElementById(`section-${index}`)
+          ?.scrollIntoView({ behavior: "smooth" })
+      }
+      className="flex gap-2 items-center mb-2 cursor-pointer hover:text-blue-600 transition"
+    >
+      <div className="w-2 h-2 bg-blue-950 rounded-sm" />
+      {item.header}
+    </div>
+  ))}
+</div>
 
           <span className="font-medium">Share</span>
 
@@ -211,9 +258,11 @@ const page = () => {
               custom={direction}
               className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6"
             >
-              {data.slice(status, status + 3).map((item) => (
-                <div key={item.id}>
+              {blogs?.slice(status, status + 3).map((item) => (
+                <div key={item._id}>
+                  <Link href={item.slug}>
                   <Card item={item} />
+                  </Link>
                 </div>
               ))}
             </motion.div>
@@ -229,8 +278,10 @@ const page = () => {
           <ArrowForwardIosIcon fontSize="small" />
         </button>
       </div>
+     
     </div>
   );
 };
 
 export default page;
+
