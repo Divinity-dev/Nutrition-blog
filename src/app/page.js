@@ -9,6 +9,7 @@ import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
+import { format } from "timeago.js";
 
 /* ================= ANIMATIONS ================= */
 const fadeUp = {
@@ -83,7 +84,7 @@ const Hero = ({ latest }) => {
 };
 
 /* ================= CARD ================= */
-const Card = ({ item }) => (
+const Card = ({ item, formatDate, format }) => (
   <Link href={`/blog/${item.slug}`}>
     <div className="border rounded-2xl overflow-hidden hover:shadow-lg transition bg-white h-full">
       <div className="relative w-full h-52">
@@ -91,6 +92,8 @@ const Card = ({ item }) => (
       </div>
 
       <div className="p-4 flex flex-col gap-2">
+
+        <span className="font-semibold">{formatDate(item.createdAt)} || {format(item.createdAt)}</span>
         <h2 className="font-semibold text-lg line-clamp-2">
           {item.title}
         </h2>
@@ -189,6 +192,14 @@ const handlePrev = () => {
   setCurrentPage((prev) => Math.max(prev - 1, 1));
 };
 
+const formatDate = (date) => {
+  return new Date(date).toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
+};
+
   return (
     <motion.div initial="hidden" animate="visible" className="px-4 md:px-10 py-8">
 
@@ -257,7 +268,7 @@ const handlePrev = () => {
               viewport={{ once: true }}
               variants={cardVariants}
             >
-              <Card item={item} />
+              <Card item={item} format={format} formatDate={formatDate}/>
             </motion.div>
           ))}
         </div>
@@ -272,7 +283,7 @@ const handlePrev = () => {
               viewport={{ once: true }}
               variants={cardVariants}
             >
-              <Card item={item} />
+              <Card item={item} format={format} formatDate={formatDate}/>
             </motion.div>
           ))}
         </div>
@@ -287,7 +298,7 @@ const handlePrev = () => {
               viewport={{ once: true }}
               variants={cardVariants}
             >
-              <Card item={item} />
+              <Card item={item} format={format} formatDate={formatDate}/>
             </motion.div>
           ))}
         </div>

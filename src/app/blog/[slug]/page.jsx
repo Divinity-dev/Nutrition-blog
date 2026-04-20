@@ -12,12 +12,17 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useSelector } from "react-redux";
 import axios from "axios";
 import { useParams } from "next/navigation";
+import { format } from "timeago.js";
+import DeleteModal from "@/components/DeleteModal";
+import { toast } from "react-toastify";
 
 
 const page = () => {
   const blog = data[0];
   const [Blog, setBlog] = useState({})
   const [blogs, setBlogs] = useState([]);
+  const [openDelete, setOpenDelete] = useState(false);
+const [loading, setLoading] = useState(false);
 const  {slug } = useParams();
 
 
@@ -46,7 +51,7 @@ getBlogs();
     getBlog()
   }, [slug])
 
-
+console.log(blog)
 
   const headers = Array(7).fill(
     "This is a beautiful blog for nutrition"
@@ -117,21 +122,63 @@ getBlogs();
     }),
   };
 
+  const formatDate = (date) => {
+  return new Date(date).toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
+};
+
+
+
+const handleDelete = async () => {
+  try {
+    setLoading(true);
+
+    await axios.delete(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/post/${Blog?._id}`
+    );
+
+    toast.success("Blog deleted successfully");
+    router.push("/");
+  } catch (err) {
+    console.log(err);
+    toast.error("Failed to delete blog");
+  } finally {
+    setLoading(false);
+    setOpenDelete(false);
+  }
+};
+
   return (
     <div className="px-4 md:px-10 py-6">
 <div className="flex justify-between items-center mb-10 gap-4">
-       {/* BACK */}
-      <Link href="/" className="inline-block ">
-        <KeyboardBackspaceIcon className="cursor-pointer" />
+  
+  <Link href="/" className="inline-block">
+    <KeyboardBackspaceIcon className="cursor-pointer" />
+  </Link>
+
+  {user && (
+    <div className="flex gap-3">
+      
+      <Link href={`/create?slug=${slug}`}>
+        <button className="bg-black text-white py-2 px-4 rounded-lg hover:bg-gray-800 transition-colors">
+          Edit blog
+        </button>
       </Link>
 
-        {user && (
-      <Link href={`/create?slug=${slug}`}>
-        <button className="mt-4 bg-black text-white py-2 px-4 rounded-lg hover:bg-gray-800 transition-colors">
-          Edit blog
-        </button></Link>
-      )}
-     </div>
+      <button
+  onClick={() => setOpenDelete(true)}
+  className="bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700"
+>
+  Delete
+</button>
+
+    </div>
+  )}
+
+</div>
 
       {/* HEADER */}
       <motion.div
@@ -153,13 +200,13 @@ getBlogs();
           <h3 className="text-sm font-medium">
             By Nutriblog |{" "}
             <span className="text-gray-500">
-              Last updated {Blog?.createdAt}
+              Last updated {formatDate(Blog?.createdAt)} || {format(Blog?.createdAt)}
             </span>
           </h3>
 
           <div className="relative w-full h-52 md:h-80">
             <Image
-              src={Blog.image}
+              src={Blog.image || "/placeholder.jpg"}
               fill
               className="object-cover rounded-2xl"
               alt=""
@@ -181,7 +228,7 @@ getBlogs();
        {Blog?.content?.map((item, index) => (
   <div key={index} id={`section-${index}`} className="mb-6 scroll-mt-24">
     <h2 className="font-bold text-lg">{item.header}</h2>
-    <div dangerouslySetInnerHTML={{ __html: item.text }} />
+    <div className="richtext-content" dangerouslySetInnerHTML={{ __html: item.text }} />
   </div>
 ))}
         </motion.div>
@@ -261,7 +308,7 @@ getBlogs();
               {blogs?.slice(status, status + 3).map((item) => (
                 <div key={item._id}>
                   <Link href={item.slug}>
-                  <Card item={item} />
+                  <Card item={item} format={format} formatDate={formatDate}/>
                   </Link>
                 </div>
               ))}
@@ -278,7 +325,12 @@ getBlogs();
           <ArrowForwardIosIcon fontSize="small" />
         </button>
       </div>
-     
+     <DeleteModal
+  open={openDelete}
+  onClose={() => setOpenDelete(false)}
+  onDelete={handleDelete}
+  loading={loading}
+/>
     </div>
   );
 };

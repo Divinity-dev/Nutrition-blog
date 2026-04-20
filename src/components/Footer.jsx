@@ -32,15 +32,16 @@ const handleSubmit = async (e)=>{
           </p>
         </div>
 
-        {/* Quick Links */}
+        {/* Topics */}
         <div>
-          <h3 className="text-white font-semibold mb-3">Quick Links</h3>
-          <ul className="space-y-2 text-sm">
-            <li><Link href="/" className="hover:text-white">Home</Link></li>
-            <li><Link href="/weight-loss" className="hover:text-white">Weight Loss</Link></li>
-            <li><Link href="/weight-gain" className="hover:text-white">Weight Gain</Link></li>
-            <li><Link href="/meal-plans" className="hover:text-white">Meal Plans</Link></li>
-          </ul>
+          <h3 className="text-white font-semibold mb-3">Topics</h3>
+         <ul className="space-y-2 text-sm text-gray-400">
+  <li>Weight Loss</li>
+  <li>Weight Gain</li>
+  <li>Healthy Eating</li>
+  <li>Meal Plans</li>
+  <li>Nutrition Tips</li>
+</ul>
         </div>
 
         {/* Resources */}

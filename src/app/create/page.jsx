@@ -36,7 +36,7 @@ const initialValues = React.useMemo(() => ({
   formData.append("upload_preset", "blog_upload");
 
   const res = await axios.post(
-    "https://api.cloudinary.com/v1_1/dzj8m9h4c/image/upload",
+    "https://api.cloudinary.com/v1_1/dwivnxusa/image/upload",
     formData
   );
 
@@ -115,6 +115,7 @@ const initialValues = React.useMemo(() => ({
             setCat(false);
             const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/categories`);
 setCategories(res.data);
+toast(res.data)
           } catch (err) {
             console.log(err);
           }
@@ -134,27 +135,26 @@ setCategories(res.data);
         enableReinitialize
           initialValues={initialValues}
        onSubmit={async (values) => {
-  if (!values.image) {
-    toast.error("Please upload an image");
-    return;
-  }
+  const payload = {
+    ...values,
+    content: values.sections, 
+  };
+
+  delete payload.sections;
 
   try {
     setSubmitting(true);
-    slug? await axios.put(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/post/${slug}`,
-      values
-    ) : await axios.post(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/post/create`,
-      values
-    );
 
-    toast.success(slug? "Blog updated successfully!" : "Blog published successfully!");
+    slug
+      ? await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/api/post/${slug}`, payload)
+      : await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/post/create`, payload);
+
+    toast.success(slug ? "Blog updated!" : "Blog published!");
     router.push("/");
   } catch (err) {
     console.log(err);
     toast.error("Failed to publish blog");
-  }finally {
+  } finally {
     setSubmitting(false);
   }
 }}
