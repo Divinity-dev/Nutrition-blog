@@ -43,3 +43,28 @@ body {
 .ProseMirror li {
   margin: 0.25rem 0;
 }
+
+.richtext-content a,
+.richtext-content a *,
+.richtext-content a u,
+.richtext-content a span,
+.richtext-content a font {
+  color: #1d4ed8 !important;
+  text-decoration-color: #1d4ed8 !important;
+}
+
+.richtext-content ul,
+.richtext-content ol,
+.rich-text-wrapper ul,
+.rich-text-wrapper ol {
+  list-style: initial !important;
+  margin-left: 1.5rem !important;
+  padding-left: 1.5rem !important;
+}
+
+.richtext-content li,
+.rich-text-wrapper li {
+  list-style: inherit !important;
+  display: list-item !important;
+  margin: 0.25rem 0;
+}

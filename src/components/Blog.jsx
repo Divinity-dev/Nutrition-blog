@@ -10,15 +10,18 @@ import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import { useSelector } from "react-redux";
 import axios from "axios";
+import { format } from "timeago.js";
 
 /* ================= CARD ================= */
-export const Card = ({ item }) => (
+export const Card = ({ item, formatDate , format}) => (
+
+  
   <div className="flex flex-col h-full gap-4 border-2 border-gray-300 rounded-2xl p-5">
 
     {/* Image */}
     <div className="w-full h-48 md:h-56 lg:h-64 relative">
       <Image
-        src={item.image}
+         src={item.image || "/placeholder.jpg"}
         fill
         className="object-cover rounded-2xl"
         alt="blog image"
@@ -27,7 +30,7 @@ export const Card = ({ item }) => (
 
     {/* Content */}
     <div className="flex flex-col flex-1 gap-2">
-      <span className="font-semibold">{item.createdAt}</span>
+      <span className="font-semibold">{formatDate(item.createdAt)} || {format(item.createdAt)}</span>
 
       <h2 className="text-xl md:text-2xl font-bold line-clamp-2">
         {item.title}
@@ -38,7 +41,7 @@ export const Card = ({ item }) => (
       </p>
 
       <span className="text-blue-800 cursor-pointer mt-auto">
-        see more
+        Read more →
       </span>
     </div>
   </div>
@@ -126,10 +129,14 @@ const handlePrev = () => {
 getBlogs();
 }, []);
 
-console.log(blogs)
-  
+const formatDate = (date) => {
+  return new Date(date).toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
+};
 
-  
 
   return (
     <div className="px-4 md:px-10 py-6 overflow-x-hidden">
@@ -150,14 +157,14 @@ console.log(blogs)
       {/* ================= FEATURED ================= */}
       <div className="flex flex-col lg:flex-row gap-6 items-stretch">
 
-        <motion.div whileHover={{ scale: 1.02 }} className="flex-1 flex">
+        <motion.div  className="flex-1 flex">
           <Link
             href={`/blog/${blogs[0]?.slug}`}
             className="flex flex-col gap-4 p-5 rounded-2xl flex-1 border-2 border-gray-300"
           >
             <div className="relative w-full h-64">
               <Image
-                src={blogs[0]?.image}
+                src={blogs[0]?.image || "/placeholder.jpg"}
                 fill
                 className="object-cover rounded-xl"
                 alt="blog image"
@@ -168,11 +175,11 @@ console.log(blogs)
               {blogs[0]?.title}
             </h2>
 
-            <span>{blogs[0]?.createdAt}</span>
+            <span>{formatDate(blogs[0]?.createdAt)} || {format(blogs[0]?.createdAt)}</span>
 
             <p>{blogs[0]?.desc}</p>
 
-            <span className="text-blue-800">see more</span>
+            <span className="text-blue-800">Read more →</span>
           </Link>
         </motion.div>
 
@@ -189,7 +196,7 @@ console.log(blogs)
             >
               <div className="relative w-full sm:w-1/2 h-40">
                 <Image
-                  src={item.image}
+                   src={item.image || "/placeholder.jpg"}
                   fill
                   className="object-cover rounded-lg"
                   alt="blog image"
@@ -201,10 +208,10 @@ console.log(blogs)
                   {item.title}
                 </h2>
 
-                <span>{item.createdAt}</span>
+                <span>{formatDate(item.createdAt)} || {format(item.createdAt)}</span>
 
                 <Link href={`/blog/${item.slug}`} className="text-blue-800">
-                  see more
+                  Read more →
                 </Link>
               </div>
             </motion.div>
@@ -260,7 +267,7 @@ console.log(blogs)
               className="h-full"
             >
               <Link href={`/blog/${item.slug}`}>
-                <Card item={item} />
+                <Card item={item} format={format} formatDate={formatDate}/>
               </Link>
             </motion.div>
           ))}
@@ -278,7 +285,7 @@ console.log(blogs)
               className="h-full"
             >
               <Link href={`/blog/${item.slug}`}>
-                <Card item={item} />
+                <Card item={item} format={format} formatDate={formatDate}/>
               </Link>
             </motion.div>
           ))}
@@ -296,7 +303,7 @@ console.log(blogs)
               className="h-full"
             >
               <Link href={`/blog/${item.slug}`}>
-                <Card item={item} />
+                <Card item={item} format={format} formatDate={formatDate}/>
               </Link>
             </motion.div>
           ))}
