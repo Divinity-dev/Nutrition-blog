@@ -48,24 +48,44 @@ export const Card = ({ item }) => (
 const Blog = () => {
 
    const [blogs, setBlogs] = useState([]);
+   const [search, setSearch] = useState("");
+const [selectedCategory, setSelectedCategory] = useState("");
   const latest = blogs?.slice(0, 3);
-  const categories = [...new Set(data.map(item => item.cat))];
+  const categories = [
+  ...new Set(blogs.map(item => item.category).filter(Boolean)),
+];
+
+const filteredBlogs = blogs.filter((item) => {
+  const matchesTitle = item.title
+    ?.toLowerCase()
+    .includes(search.toLowerCase());
+
+  const matchesCategory = selectedCategory
+    ? item.category === selectedCategory
+    : true;
+
+  return matchesTitle && matchesCategory;
+});
 
   const user = useSelector(state => state.auth?.user)
   
-
+      
   const itemsPerPage = 7;
   const [currentPage, setCurrentPage] = useState(1);
  
-  const totalPages = Math.ceil(blogs.length / itemsPerPage);
+  const totalPages = Math.ceil(filteredBlogs.length / itemsPerPage);
 
   const startIndex = (currentPage - 1) * itemsPerPage;
-  const currentItems = blogs?.slice(startIndex, startIndex + itemsPerPage);
+  const currentItems = filteredBlogs?.slice(startIndex, startIndex + itemsPerPage);
   const handleNext = () => {
   if (currentPage < totalPages) {
     setCurrentPage(prev => prev + 1);
   }
 };
+
+useEffect(() => {
+  setCurrentPage(1);
+}, [search, selectedCategory]);
 
 const handlePrev = () => {
   if (currentPage > 1) {
@@ -115,8 +135,8 @@ console.log(blogs)
     <div className="px-4 md:px-10 py-6 overflow-x-hidden">
 
       {/* ================= HEADER ================= */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-4">
-        <h1 className="text-xl md:text-2xl mb-5 font-semibold">
+      <div className="flex  justify-between items-center mb-10 gap-4">
+        <h1 className="text-xl md:text-2xl  font-semibold">
         Latest Blog
       </h1>
       {user && (
@@ -132,7 +152,7 @@ console.log(blogs)
 
         <motion.div whileHover={{ scale: 1.02 }} className="flex-1 flex">
           <Link
-            href={`/blog/${blogs[0]?._id}`}
+            href={`/blog/${blogs[0]?.slug}`}
             className="flex flex-col gap-4 p-5 rounded-2xl flex-1 border-2 border-gray-300"
           >
             <div className="relative w-full h-64">
@@ -183,7 +203,7 @@ console.log(blogs)
 
                 <span>{item.createdAt}</span>
 
-                <Link href={`/blog/${item._id}`} className="text-blue-800">
+                <Link href={`/blog/${item.slug}`} className="text-blue-800">
                   see more
                 </Link>
               </div>
@@ -202,20 +222,26 @@ console.log(blogs)
           <div className="flex flex-1 border-2 border-gray-300 rounded-2xl p-3">
             <SearchIcon />
             <input
-              type="text"
-              placeholder="Search"
-              className="w-full outline-none"
-            />
+  type="text"
+  placeholder="Search by title..."
+  value={search}
+  onChange={(e) => setSearch(e.target.value)}
+  className="w-full outline-none"
+/>
           </div>
 
-          <select className="flex-1 border-2 border-gray-300 p-2 rounded-lg">
-            <option value="">Filter by category</option>
-            {categories.map((cat, index) => (
-              <option key={index} value={cat}>
-                {cat}
-              </option>
-            ))}
-          </select>
+         <select
+  value={selectedCategory}
+  onChange={(e) => setSelectedCategory(e.target.value)}
+  className="flex-1 border-2 border-gray-300 p-2 rounded-lg"
+>
+  <option value="">Filter by category</option>
+  {categories.map((cat, index) => (
+    <option key={index} value={cat}>
+      {cat}
+    </option>
+  ))}
+</select>
         </div>
       </div>
 
@@ -233,7 +259,7 @@ console.log(blogs)
               variants={cardVariants}
               className="h-full"
             >
-              <Link href={`/blog/${item.id}`}>
+              <Link href={`/blog/${item.slug}`}>
                 <Card item={item} />
               </Link>
             </motion.div>
@@ -251,7 +277,7 @@ console.log(blogs)
               variants={cardVariants}
               className="h-full"
             >
-              <Link href={`/blog/${item.id}`}>
+              <Link href={`/blog/${item.slug}`}>
                 <Card item={item} />
               </Link>
             </motion.div>
@@ -269,7 +295,7 @@ console.log(blogs)
               variants={cardVariants}
               className="h-full"
             >
-              <Link href={`/blog/${item.id}`}>
+              <Link href={`/blog/${item.slug}`}>
                 <Card item={item} />
               </Link>
             </motion.div>

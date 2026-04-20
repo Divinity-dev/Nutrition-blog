@@ -6,6 +6,7 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import RichTextEditor from "@/components/RichTextEditor";
 import { toast } from "react-toastify";
+import { useSearchParams } from "next/navigation";
 
 const CreateBlog = () => {
   const router = useRouter();
@@ -13,6 +14,20 @@ const CreateBlog = () => {
   const [cat, setCat] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [Blog, setBlog] = useState({})
+  const searchParams = useSearchParams();
+const slug = searchParams.get("slug");
+
+const initialValues = React.useMemo(() => ({
+  title: Blog?.title || "",
+  image: Blog?.image || "",
+  desc: Blog?.desc || "",
+  category: Blog?.category || "",
+  sections: Blog?.content?.length
+    ? Blog.content
+    : [{ header: "", text: "" }],
+}), [Blog]);
+
 
   const uploadImageToCloudinary = async (file) => {
   const formData = new FormData();
@@ -33,7 +48,7 @@ const CreateBlog = () => {
     const fetchCategories = async () => {
       try {
         const res = await axios.get(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/categories`
+          `${process.env.NEXT_PUBLIC_API_URL}/api/category/categories`
         );
         setCategories(res.data);
       } catch (err) {
@@ -43,6 +58,24 @@ const CreateBlog = () => {
 
     fetchCategories();
   }, []);
+
+   useEffect(()=>{
+      const getBlog = async ()=>{
+        if (!slug) return;
+        try {
+          const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/post/${slug}`)
+          setBlog(res.data)
+          console.log(res.data)
+        } catch (error) {
+          console.log(error)
+        }
+      };
+      getBlog()
+    }, [slug])
+
+    if (slug && !Blog._id) {
+  return <div className="p-10">Loading...</div>;
+}
 
   return (
     <div className="min-h-screen bg-gray-50 py-10 px-4">
@@ -98,13 +131,8 @@ setCategories(res.data);
         </Formik>}
 
         <Formik
-          initialValues={{
-            title: "",
-            image: "",
-            description: "",
-            category: "",
-            sections: [{ header: "", text: "" }],
-          }}
+        enableReinitialize
+          initialValues={initialValues}
        onSubmit={async (values) => {
   if (!values.image) {
     toast.error("Please upload an image");
@@ -113,12 +141,15 @@ setCategories(res.data);
 
   try {
     setSubmitting(true);
-    await axios.post(
+    slug? await axios.put(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/post/${slug}`,
+      values
+    ) : await axios.post(
       `${process.env.NEXT_PUBLIC_API_URL}/api/post/create`,
       values
     );
 
-    toast.success("Blog published successfully!");
+    toast.success(slug? "Blog updated successfully!" : "Blog published successfully!");
     router.push("/");
   } catch (err) {
     console.log(err);
@@ -176,7 +207,7 @@ setCategories(res.data);
 
                 <Field
                   as="textarea"
-                  name="description"
+                  name="desc"
                   placeholder="Short description..."
                   className="border p-3 rounded-xl h-28 focus:ring-2 focus:ring-black outline-none"
                 />
@@ -186,7 +217,9 @@ setCategories(res.data);
                   name="category"
                   className="border p-3 rounded-xl focus:ring-2 focus:ring-black outline-none"
                 >
-                  <option value="">Select category</option>
+                  <option value="" disabled>
+  Select category
+</option>
                   {categories.map((cat) => (
                     <option key={cat._id} value={cat.name}>
                       {cat.name}
@@ -205,7 +238,7 @@ setCategories(res.data);
                       Article Sections
                     </h2>
 
-                    {values.sections.map((_, index) => (
+                    {(values.sections || []).map((_, index) => (
                       <div
                         key={index}
                         className="bg-white border shadow-sm rounded-2xl p-5 flex flex-col gap-4"
