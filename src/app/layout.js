@@ -18,8 +18,65 @@ const poppins = Poppins({
 });
 
 export const metadata = {
-  title: "Nutriblog",
-  description: "A modern nutrition blog",
+  title: {
+    default: "Nutriblog",
+    template: "%s | Nutriblog",
+  },
+  description: "A modern nutrition blog sharing healthy food tips, diet guides, and wellness insights.",
+  keywords: [
+    "nutrition",
+    "healthy eating",
+    "diet tips",
+    "food blog",
+    "wellness",
+    "healthy lifestyle",
+    "fitness nutrition",
+  ],
+  authors: [{ name: "Nutriblog Team" }],
+  creator: "Nutriblog",
+  publisher: "Nutriblog",
+
+  metadataBase: new URL("https://your-domain.com"),
+
+  openGraph: {
+    title: "Nutriblog",
+    description: "A modern nutrition blog sharing healthy food tips and wellness insights.",
+    url: "https://your-domain.com",
+    siteName: "Nutriblog",
+    images: [
+      {
+        url: "/og-image.jpg", // important for social sharing
+        width: 1200,
+        height: 630,
+        alt: "Nutriblog preview image",
+      },
+    ],
+    locale: "en_NG",
+    type: "website",
+  },
+
+  twitter: {
+    card: "summary_large_image",
+    title: "Nutriblog",
+    description: "Healthy eating tips and nutrition guides.",
+    images: ["/og-image.jpg"],
+    creator: "@yourhandle",
+  },
+
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+
+  icons: {
+    icon: "/favicon.ico",
+  },
 };
 
 export default function RootLayout({ children }) {
