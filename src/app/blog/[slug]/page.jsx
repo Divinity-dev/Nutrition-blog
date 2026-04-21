@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from "react";
 import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
-import { data } from "../../../components/Data";
 import Image from "next/image";
 import { Card } from "../../../components/Blog";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
@@ -15,10 +14,11 @@ import { useParams } from "next/navigation";
 import { format } from "timeago.js";
 import DeleteModal from "@/components/DeleteModal";
 import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
 
 
 const page = () => {
-  const blog = data[0];
+
   const [Blog, setBlog] = useState({})
   const [blogs, setBlogs] = useState([]);
   const [openDelete, setOpenDelete] = useState(false);
@@ -31,7 +31,6 @@ const  {slug } = useParams();
     try {
       const blogs = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/post/posts`);
       setBlogs(blogs.data);
-      console.log(blogs.data)
     } catch (error) {
       console.log(error)
     }
@@ -43,7 +42,7 @@ getBlogs();
       try {
         const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/post/${slug}`)
         setBlog(res.data)
-              console.log(res.data)
+             
       } catch (error) {
         console.log(error)
       }
@@ -51,15 +50,10 @@ getBlogs();
     getBlog()
   }, [slug])
 
-console.log(blog)
-
-  const headers = Array(7).fill(
-    "This is a beautiful blog for nutrition"
-  );
+const title = Blog?.title || "";
 
   const currentUrl =
   typeof window !== "undefined" ? window.location.href : "";
-  const title = blog.header;
 
  const socialLinks = [
   {
@@ -88,7 +82,7 @@ console.log(blog)
   const [direction, setDirection] = useState(0);
 
   const handleNext = () => {
-    if (status + 3 < data.length) {
+    if (status + 3 < blogs.length) {
       setDirection(1);
       setStatus((prev) => prev + 1);
     }
@@ -131,7 +125,7 @@ console.log(blog)
 };
 
 
-
+const router = useRouter();
 const handleDelete = async () => {
   try {
     setLoading(true);
@@ -151,6 +145,9 @@ const handleDelete = async () => {
   }
 };
 
+if (!Blog?.title) {
+  return <div className="text-center py-20">Loading...</div>;
+}
   return (
     <div className="px-4 md:px-10 py-6">
 <div className="flex justify-between items-center mb-10 gap-4">
@@ -189,7 +186,7 @@ const handleDelete = async () => {
       >
         <div className="flex flex-col items-center mx-auto gap-4 max-w-3xl text-center">
 
-          <h1 className="text-2xl md:text-4xl font-bold text-blue-950">
+          <h1 className="text-2xl md:text-4xl font-bold text-gray-900">
             {Blog?.title}
           </h1>
 
@@ -225,10 +222,10 @@ const handleDelete = async () => {
           animate="visible"
           className="flex-1 text-sm md:text-base leading-relaxed"
         >
-       {Blog?.content?.map((item, index) => (
+       {(Blog?.content ?? []).map((item, index) => (
   <div key={index} id={`section-${index}`} className="mb-6 scroll-mt-24">
-    <h2 className="font-bold text-lg">{item.header}</h2>
-    <div className="richtext-content" dangerouslySetInnerHTML={{ __html: item.text }} />
+    <h2 className="font-heading text-xl md:text-2xl font-semibold mt-8 mb-3">{item.header}</h2>
+    <div className="richtext-content font-body text-base md:text-lg leading-8 prose prose-lg max-w-none" dangerouslySetInnerHTML={{ __html: item.text }} />
   </div>
 ))}
         </motion.div>
@@ -238,9 +235,9 @@ const handleDelete = async () => {
           variants={fadeUp}
           initial="hidden"
           animate="visible"
-          className="md:w-72 w-full md:sticky md:top-10 flex flex-col gap-4"
+          className="md:w-72 w-full h-fit md:sticky md:top-24 flex flex-col gap-4 self-start"
         >
-        <div className="p-4 bg-gray-100 rounded-xl text-sm">
+        <div className="p-5 bg-white border rounded-2xl text-sm shadow-sm">
   {Blog?.content?.map((item, index) => (
     <div
       key={index}
@@ -307,7 +304,7 @@ const handleDelete = async () => {
             >
               {blogs?.slice(status, status + 3).map((item) => (
                 <div key={item._id}>
-                  <Link href={item.slug}>
+                  <Link href={`/blog/${item.slug}`}>
                   <Card item={item} format={format} formatDate={formatDate}/>
                   </Link>
                 </div>
@@ -319,7 +316,7 @@ const handleDelete = async () => {
         {/* NEXT */}
         <button
           onClick={handleNext}
-          disabled={status + 3 >= data.length}
+          disabled={status + 3 >= blogs.length}
           className="p-2 md:p-3 rounded-full border hover:bg-gray-100 disabled:opacity-30"
         >
           <ArrowForwardIosIcon fontSize="small" />

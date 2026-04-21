@@ -12,6 +12,10 @@ export default {
         orangeDark: "#CC502A",
         orangeLight: "#FDC495",
       },
+      fontFamily: {
+      body: ["var(--font-body)"],
+      heading: ["var(--font-heading)"],
+      }
     },
   },
   plugins: [],
