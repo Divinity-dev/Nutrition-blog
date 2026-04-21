@@ -1,0 +1,71 @@
+@import "tailwindcss";
+
+/* Tailwind theme variables */
+@theme {
+  --color-primary: #16a34a;
+  --color-orange: #EF7F21;
+  --color-orangeDark: #CC502A;
+  --color-orangeLight: #FDC495;
+}
+
+/* your custom styles */
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+}
+
+.ProseMirror {
+  min-height: 300px;
+  height: 100%;
+  outline: none;
+}
+
+.ProseMirror a {
+  color: blue;
+  text-decoration: underline;
+}
+
+.ProseMirror ul {
+  list-style-type: disc;
+  padding-left: 1.5rem;
+}
+
+.ProseMirror ol {
+  list-style-type: decimal;
+  padding-left: 1.5rem;
+}
+
+.ProseMirror li {
+  margin: 0.25rem 0;
+}
+
+.richtext-content a,
+.richtext-content a *,
+.richtext-content a u,
+.richtext-content a span,
+.richtext-content a font {
+  color: #1d4ed8 !important;
+  text-decoration-color: #1d4ed8 !important;
+}
+
+.richtext-content ul,
+.richtext-content ol,
+.rich-text-wrapper ul,
+.rich-text-wrapper ol {
+  list-style: initial !important;
+  margin-left: 1.5rem !important;
+  padding-left: 1.5rem !important;
+}
+
+.richtext-content li,
+.rich-text-wrapper li {
+  list-style: inherit !important;
+  display: list-item !important;
+  margin: 0.25rem 0;
+}
