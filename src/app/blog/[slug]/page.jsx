@@ -304,7 +304,13 @@ if (!Blog?.title) {
             >
               {blogs?.slice(status, status + 3).map((item) => (
                 <div key={item._id}>
-                  <Link href={`/blog/${item.slug}`}>
+                  <Link href={`/blog/${item.slug}`}
+                   onClick={() => {
+    window.gtag?.("event", "blog_click", {
+      event_category: "blog",
+      event_label: item.slug,
+    });
+  }}>
                   <Card item={item} format={format} formatDate={formatDate}/>
                   </Link>
                 </div>

@@ -85,7 +85,12 @@ const Hero = ({ latest }) => {
 
 /* ================= CARD ================= */
 const Card = ({ item, formatDate, format }) => (
-  <Link href={`/blog/${item.slug}`}>
+  <Link href={`/blog/${item.slug}`}  onClick={() => {
+    window.gtag?.("event", "blog_click", {
+      event_category: "blog",
+      event_label: item.slug,
+    });
+  }}>
     <div className="border rounded-2xl overflow-hidden hover:shadow-lg transition bg-white h-full">
       <div className="relative w-full h-52">
         <Image src={item.image} fill className="object-cover" alt="blog" />
@@ -352,7 +357,7 @@ const formatDate = (date) => {
           Subscribe
         </button>
 
-          {status && <form className="flex flex-col sm:flex-row gap-2 mt-4 w-1/5 items-center mx-auto"
+          {status && <form className="flex flex-col sm:flex-row gap-2 mt-4 w-2/5 md:w-1/5 items-center mx-auto"
           onSubmit={handleSubmit}>
             <input
               type="email"
