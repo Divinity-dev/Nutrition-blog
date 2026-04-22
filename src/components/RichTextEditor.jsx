@@ -3,24 +3,27 @@
 import React from "react";
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
-import Underline from "@tiptap/extension-underline";
+// import Underline from "@tiptap/extension-underline";
 import Link from "@tiptap/extension-link";
 
 const RichTextEditor = ({ value, onChange }) => {
   const editor = useEditor({
     immediatelyRender: false,
-    extensions: [
-      StarterKit.configure({
-        bulletList: { keepMarks: true },
-        orderedList: { keepMarks: true },
-      }),
-      Underline,
-      Link.configure({
-        openOnClick: true,
-        autolink: true,
-        linkOnPaste: true,
-      }),
-    ],
+  extensions: [
+  StarterKit.configure({
+    bulletList: { keepMarks: true },
+    orderedList: { keepMarks: true },
+    link: false, // IMPORTANT: prevent duplicate link
+  }),
+
+  // Underline,
+  
+  Link.configure({
+  openOnClick: false,  
+  autolink: true,
+  linkOnPaste: true,
+})
+],
     content: value || "",
     onUpdate: ({ editor }) => {
       onChange(editor.getHTML());
@@ -29,11 +32,26 @@ const RichTextEditor = ({ value, onChange }) => {
 
   if (!editor) return null;
 
-  const setLink = () => {
-    const url = window.prompt("Enter URL");
-    if (!url) return;
-    editor.chain().focus().setLink({ href: url }).run();
-  };
+const setLink = () => {
+  console.log("LINK BUTTON CLICKED");
+
+  const url = window.prompt("Enter URL");
+  console.log("URL ENTERED:", url);
+
+  if (url === null) return;
+
+  const previousUrl = editor.getAttributes("link").href;
+  console.log("PREVIOUS URL:", previousUrl);
+
+  editor
+    .chain()
+    .focus()
+    .extendMarkRange("link")
+    .setLink({ href: url })
+    .run();
+
+  console.log("HTML AFTER:", editor.getHTML());
+};
 
   /* ================= BUTTON STYLE ================= */
   const btnBase =

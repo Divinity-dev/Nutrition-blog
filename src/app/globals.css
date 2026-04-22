@@ -26,9 +26,10 @@ body {
   outline: none;
 }
 
-.ProseMirror a {
-  color: blue;
+.prose a {
+  color: #2563eb !important;
   text-decoration: underline;
+  cursor: pointer;
 }
 
 .ProseMirror ul {

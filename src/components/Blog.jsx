@@ -160,6 +160,12 @@ const formatDate = (date) => {
         <motion.div  className="flex-1 flex">
           <Link
             href={`/blog/${blogs[0]?.slug}`}
+             onClick={() => {
+    window.gtag?.("event", "blog_click", {
+      event_category: "blog",
+      event_label: blogs[0]?.slug,
+    });
+  }}
             className="flex flex-col gap-4 p-5 rounded-2xl flex-1 border-2 border-gray-300"
           >
             <div className="relative w-full h-64">
@@ -210,7 +216,14 @@ const formatDate = (date) => {
 
                 <span>{formatDate(item.createdAt)} || {format(item.createdAt)}</span>
 
-                <Link href={`/blog/${item.slug}`} className="text-blue-800">
+                <Link href={`/blog/${item.slug}`} 
+                 onClick={() => {
+    window.gtag?.("event", "blog_click", {
+      event_category: "blog",
+      event_label: item.slug,
+    });
+  }}
+                className="text-blue-800">
                   Read more →
                 </Link>
               </div>
@@ -266,7 +279,13 @@ const formatDate = (date) => {
               variants={cardVariants}
               className="h-full"
             >
-              <Link href={`/blog/${item.slug}`}>
+              <Link href={`/blog/${item.slug}`} 
+               onClick={() => {
+    window.gtag?.("event", "blog_click", {
+      event_category: "blog",
+      event_label: item.slug,
+    });
+  }}>
                 <Card item={item} format={format} formatDate={formatDate}/>
               </Link>
             </motion.div>
@@ -284,7 +303,13 @@ const formatDate = (date) => {
               variants={cardVariants}
               className="h-full"
             >
-              <Link href={`/blog/${item.slug}`}>
+              <Link href={`/blog/${item.slug}`}
+               onClick={() => {
+    window.gtag?.("event", "blog_click", {
+      event_category: "blog",
+      event_label: item.slug,
+    });
+  }}>
                 <Card item={item} format={format} formatDate={formatDate}/>
               </Link>
             </motion.div>
@@ -302,7 +327,13 @@ const formatDate = (date) => {
               variants={cardVariants}
               className="h-full"
             >
-              <Link href={`/blog/${item.slug}`}>
+              <Link href={`/blog/${item.slug}`}
+               onClick={() => {
+    window.gtag?.("event", "blog_click", {
+      event_category: "blog",
+      event_label: item.slug,
+    });
+  }}>
                 <Card item={item} format={format} formatDate={formatDate}/>
               </Link>
             </motion.div>
