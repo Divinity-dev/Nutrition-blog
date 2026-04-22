@@ -145,7 +145,7 @@ const handleDelete = async () => {
   }
 };
 
-if (!Blog?.title) {
+if (!Blog || !Blog._id) {
   return <div className="text-center py-20">Loading...</div>;
 }
   return (
@@ -305,12 +305,7 @@ if (!Blog?.title) {
               {blogs?.slice(status, status + 3).map((item) => (
                 <div key={item._id}>
                   <Link href={`/blog/${item.slug}`}
-                   onClick={() => {
-    window.gtag?.("event", "blog_click", {
-      event_category: "blog",
-      event_label: item.slug,
-    });
-  }}>
+                 >
                   <Card item={item} format={format} formatDate={formatDate}/>
                   </Link>
                 </div>
