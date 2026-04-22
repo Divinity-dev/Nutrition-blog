@@ -85,12 +85,7 @@ const Hero = ({ latest }) => {
 
 /* ================= CARD ================= */
 const Card = ({ item, formatDate, format }) => (
-  <Link href={`/blog/${item.slug}`}  onClick={() => {
-    window.gtag?.("event", "blog_click", {
-      event_category: "blog",
-      event_label: item.slug,
-    });
-  }}>
+  <Link href={`/blog/${item.slug}`} >
     <div className="border rounded-2xl overflow-hidden hover:shadow-lg transition bg-white h-full">
       <div className="relative w-full h-52">
         <Image src={item.image} fill className="object-cover" alt="blog" />

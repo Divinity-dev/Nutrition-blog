@@ -7,7 +7,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Script from "next/script";
 import GoogleAnalytics from "./GoogleAnalytics";
-import useScrollDepth from "./hooks/useScrollDepth";
+
 
 const inter = Inter({
   subsets: ["latin"],
