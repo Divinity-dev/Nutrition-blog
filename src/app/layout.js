@@ -83,7 +83,7 @@ export const metadata = {
   },
 
   icons: {
-    icon: "/favicon.ico",
+    icon: "/favicon.png",
   },
 };
 
