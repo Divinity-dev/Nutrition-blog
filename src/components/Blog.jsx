@@ -112,7 +112,7 @@ const Blog = () => {
   /* ================= DATA SPLITS ================= */
   const featured = pageBlogs?.[0];
   const latest = pageBlogs.slice(1, 4);
-  const grid = pageBlogs.slice(4);
+  // const grid = pageBlogs.slice(4);
 
   const categories = [
     ...new Set(blogs.map((item) => item.category).filter(Boolean)),
@@ -265,19 +265,19 @@ const Blog = () => {
       <div className="flex flex-col gap-6">
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {grid.slice(0, 2).map((item, i) => (
+          {pageBlogs.slice(0, 2).map((item, i) => (
             <Card key={item._id} item={item} format={format} formatDate={formatDate} />
           ))}
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {grid.slice(2, 5).map((item) => (
+          {pageBlogs.slice(2, 5).map((item) => (
             <Card key={item._id} item={item} format={format} formatDate={formatDate} />
           ))}
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {grid.slice(5, 7).map((item) => (
+          {pageBlogs.slice(5, 7).map((item) => (
             <Card key={item._id} item={item} format={format} formatDate={formatDate} />
           ))}
         </div>
