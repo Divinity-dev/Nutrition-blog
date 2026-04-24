@@ -10,9 +10,11 @@ import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import { useSelector } from "react-redux";
 import axios from "axios";
 import { format } from "timeago.js";
+ 
 
 /* ================= CARD ================= */
 export const Card = ({ item, formatDate, format }) => (
+  <Link href={`/blog/${item.slug}`}>
   <div className="flex flex-col h-full gap-4 border-2 border-gray-300 rounded-2xl p-5">
 
     <div className="w-full h-48 md:h-56 lg:h-64 relative">
@@ -42,6 +44,7 @@ export const Card = ({ item, formatDate, format }) => (
       </span>
     </div>
   </div>
+  </Link>
 );
 
 /* ================= BLOG ================= */
@@ -50,6 +53,7 @@ const Blog = () => {
   const [search, setSearch] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const [cats, setCats] = useState([]);
 
   const user = useSelector((state) => state.auth?.user);
 
@@ -68,6 +72,21 @@ const Blog = () => {
     getBlogs();
   }, []);
 
+    useEffect(() => {
+        const fetchCategories = async () => {
+          try {
+            const res = await axios.get(
+              `${process.env.NEXT_PUBLIC_API_URL}/api/category/categories`
+            );
+            setCats(res.data || []);
+          } catch (err) {
+            console.log(err);
+          }
+        };
+    
+        fetchCategories();
+      }, []);
+
   /* ================= FILTER ================= */
   const filteredBlogs = blogs.filter((item) => {
     const matchesTitle = item.title
@@ -75,8 +94,8 @@ const Blog = () => {
       .includes(search.toLowerCase());
 
     const matchesCategory = selectedCategory
-      ? item.category === selectedCategory
-      : true;
+  ? item.categories?.includes(selectedCategory)
+  : true;
 
     return matchesTitle && matchesCategory;
   });
@@ -114,9 +133,12 @@ const Blog = () => {
   const latest = pageBlogs.slice(1, 4);
   // const grid = pageBlogs.slice(4);
 
-  const categories = [
-    ...new Set(blogs.map((item) => item.category).filter(Boolean)),
-  ];
+//   const categories = [
+//     ...new Set(pageBlogs.map((item) => item.categories
+// ).filter(Boolean)),
+//   ];
+
+  
 
   /* ================= ANIMATION ================= */
   const cardVariants = {
@@ -139,6 +161,8 @@ const Blog = () => {
       year: "numeric",
     });
   };
+
+  console.log(blogs)
 
   /* ================= LOADING GUARD ================= */
   if (!blogs.length) return <p className="p-10">Loading...</p>;
@@ -252,11 +276,11 @@ const Blog = () => {
             className="flex-1 border-2 border-gray-300 p-2 rounded-lg"
           >
             <option value="">Filter by category</option>
-            {categories.map((cat, i) => (
-              <option key={i} value={cat}>
-                {cat}
-              </option>
-            ))}
+              {cats.map((cat) => (
+  <option key={cat._id} value={cat._id}>
+    {cat.name}
+  </option>
+))}
           </select>
         </div>
       </div>

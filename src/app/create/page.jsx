@@ -16,13 +16,14 @@ const CreateBlog = () => {
   const [submitting, setSubmitting] = useState(false);
   const [Blog, setBlog] = useState({})
   const searchParams = useSearchParams();
+  const [refresh, setRefresh] = useState(false)
 const slug = searchParams.get("slug");
 
 const initialValues = React.useMemo(() => ({
   title: Blog?.title || "",
   image: Blog?.image || "",
   desc: Blog?.desc || "",
-  category: Blog?.category || "",
+  categories: Blog?.categories || [],
   sections: Blog?.content?.length
     ? Blog.content
     : [{ header: "", text: "" }],
@@ -50,14 +51,14 @@ const initialValues = React.useMemo(() => ({
         const res = await axios.get(
           `${process.env.NEXT_PUBLIC_API_URL}/api/category/categories`
         );
-        setCategories(res.data);
+        setCategories(res.data || []);
       } catch (err) {
         console.log(err);
       }
     };
 
     fetchCategories();
-  }, []);
+  }, [refresh]);
 
    useEffect(()=>{
       const getBlog = async ()=>{
@@ -113,9 +114,7 @@ const initialValues = React.useMemo(() => ({
             );
             resetForm();
             setCat(false);
-            const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/categories`);
-setCategories(res.data);
-toast(res.data)
+           setRefresh(prev => !prev);
           } catch (err) {
             console.log(err);
           }
@@ -136,9 +135,10 @@ toast(res.data)
           initialValues={initialValues}
        onSubmit={async (values) => {
   const payload = {
-    ...values,
-    content: values.sections, 
-  };
+  ...values,
+  content: values.sections,
+  categories: values.categories ? [values.categories] : [],
+};
 
   delete payload.sections;
 
@@ -214,16 +214,16 @@ toast(res.data)
 
                 <Field
                   as="select"
-                  name="category"
+                  name="categories"
                   className="border p-3 rounded-xl focus:ring-2 focus:ring-black outline-none"
                 >
                   <option value="" disabled>
   Select category
 </option>
                   {categories.map((cat) => (
-                    <option key={cat._id} value={cat.name}>
-                      {cat.name}
-                    </option>
+                    <option key={cat._id} value={cat._id}>
+  {cat.name}
+</option>
                   ))}
                 </Field>
 
