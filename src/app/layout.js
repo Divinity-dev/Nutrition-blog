@@ -46,7 +46,7 @@ export const metadata = {
   openGraph: {
     title: "Nutriblog hub",
     description: "A modern nutrition blog sharing healthy food tips and wellness insights.",
-    url: "https://nutribloghub.com",
+    url: "https://www.nutribloghub.com",
     siteName: "Nutriblog hub",
     images: [
       {
