@@ -119,6 +119,7 @@ const Home = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [status, setStatus]= useState(false)
   const [email, setEmail] = useState('')
+  const [cats, setCats] = useState([]);
   
   const handleSubmit = async (e)=>{
     e.preventDefault();
@@ -133,6 +134,23 @@ const Home = () => {
   }
 
   const user = useSelector((state) => state.auth?.user);
+
+   useEffect(() => {
+      const fetchCategories = async () => {
+        try {
+          const res = await axios.get(
+            `${process.env.NEXT_PUBLIC_API_URL}/api/category/categories`
+          );
+          setCats(res.data || []);
+        } catch (err) {
+          console.log(err);
+        }
+      };
+  
+      fetchCategories();
+    }, []);
+
+
 
   useEffect(() => {
     const getBlogs = async () => {
@@ -149,18 +167,21 @@ const Home = () => {
     getBlogs();
   }, []);
 
+
   /* ================= FILTER ================= */
-  const filteredBlogs = blogs.filter((item) => {
+ const filteredBlogs = blogs.filter((item) => {
     const matchesTitle = item.title
       ?.toLowerCase()
       .includes(search.toLowerCase());
 
     const matchesCategory = selectedCategory
-      ? item.category === selectedCategory
-      : true;
+  ? item.categories?.includes(selectedCategory)
+  : true;
 
     return matchesTitle && matchesCategory;
   });
+
+
 
   /* ================= PAGINATION ================= */
   const itemsPerPage = 7;
@@ -180,9 +201,12 @@ const Home = () => {
 
   const latest = paginatedBlogs.slice(0, 7);
 
-  const categories = [
-    ...new Set(blogs.map((b) => b.category).filter(Boolean)),
-  ];
+//  const categories = [
+//   ...new Set(blogs.map((b) => b.categories
+// ).filter(Boolean)),
+// ];
+
+
 
   const handleNext = () => {
   setCurrentPage((prev) => Math.min(prev + 1, totalPages));
@@ -228,11 +252,11 @@ const formatDate = (date) => {
           className="flex-1 border-2 border-gray-300 p-3 rounded-lg"
         >
           <option value="">Filter by category</option>
-          {categories.map((cat, i) => (
-            <option key={i} value={cat}>
-              {cat}
-            </option>
-          ))}
+          {cats.map((cat) => (
+  <option key={cat._id} value={cat._id}>
+    {cat.name}
+  </option>
+))}
         </select>
       </motion.div>
 
