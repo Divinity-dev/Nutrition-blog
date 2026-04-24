@@ -17,7 +17,7 @@ import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 
 
-const page = ({slug}) => {
+const BlogDetails = ({slug}) => {
 
   const [Blog, setBlog] = useState({})
   const [blogs, setBlogs] = useState([]);
@@ -333,5 +333,5 @@ if (!Blog || !Blog._id) {
   );
 };
 
-export default page;
+export default BlogDetails;
 
