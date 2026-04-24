@@ -1,5 +1,5 @@
 export default async function sitemap() {
-  const baseUrl = "https://nutribloghub.com";
+  const baseUrl = "https://www.nutribloghub.com";
 
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_API_URL}/api/post/posts`
