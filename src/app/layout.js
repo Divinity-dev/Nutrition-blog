@@ -41,7 +41,7 @@ export const metadata = {
   creator: "Nutriblog hub",
   publisher: "Nutriblog hub",
 
-  metadataBase: new URL("https://nutribloghub.com"),
+  metadataBase: new URL("https://www.nutribloghub.com"),
 
   openGraph: {
     title: "Nutriblog hub",
@@ -59,6 +59,9 @@ export const metadata = {
     locale: "en_NG",
     type: "website",
   },
+  alternates: {
+    canonical: "/", 
+  },
 
   // twitter: {
   //   card: "summary_large_image",
@@ -67,9 +70,7 @@ export const metadata = {
   //   images: ["/og-image.jpg"],
   //   creator: "@yourhandle",
   // },
-  alternates: {
-  canonical: "https://nutribloghub.com",
-},
+ 
 
   robots: {
     index: true,
