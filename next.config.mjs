@@ -1,4 +1,3 @@
-/** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
     remotePatterns: [
@@ -7,6 +6,22 @@ const nextConfig = {
         hostname: "**",
       },
     ],
+  },
+
+  async redirects() {
+    return [
+      {
+        source: "/:path*",
+        has: [
+          {
+            type: "host",
+            value: "nutribloghub.com",
+          },
+        ],
+        destination: "https://www.nutribloghub.com/:path*",
+        permanent: true,
+      },
+    ];
   },
 };
 
