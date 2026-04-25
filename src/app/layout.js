@@ -59,9 +59,7 @@ export const metadata = {
     locale: "en_NG",
     type: "website",
   },
-  alternates: {
-    canonical: "/", 
-  },
+ 
 
   // twitter: {
   //   card: "summary_large_image",
