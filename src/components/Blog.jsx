@@ -226,6 +226,8 @@ const Blog = () => {
                 variants={cardVariants}
                 className="flex flex-col sm:flex-row gap-4 p-5 border-2 border-gray-300 rounded-2xl"
               >
+                <Link href={`/blog/${item.slug}`}>
+                
                 <div className="relative w-full sm:w-1/2 h-40">
                   <Image
                     src={item.image || "/placeholder.jpg"}
@@ -244,10 +246,11 @@ const Blog = () => {
                     {formatDate(item.createdAt)} || {format(item.createdAt)}
                   </span>
 
-                  <Link href={`/blog/${item.slug}`} className="text-blue-800">
+                  <span  className="text-blue-800">
                     Read more →
-                  </Link>
+                  </span>
                 </div>
+                </Link>
               </motion.div>
             ))}
           </div>
