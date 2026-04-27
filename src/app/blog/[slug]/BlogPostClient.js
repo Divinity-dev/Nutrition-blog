@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
 import Image from "next/image";
-import { Card } from "../../../components/Blog";
+import { Card } from "../Blog";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import Link from "next/link";
