@@ -111,15 +111,15 @@ const Card = ({ item, formatDate, format }) => (
 );
 
 /* ================= HOME ================= */
-const Home = () => {
-  const [blogs, setBlogs] = useState([]);
+const Home = ({ blogs: initialBlogs = [], categories: initialCategories = [] }) => {
+  const [blogs, setBlogs] = useState(initialBlogs);
 
   const [search, setSearch] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [status, setStatus]= useState(false)
   const [email, setEmail] = useState('')
-  const [cats, setCats] = useState([]);
+  const [cats, setCats] = useState(initialCategories);
   
   const handleSubmit = async (e)=>{
     e.preventDefault();
@@ -135,7 +135,10 @@ const Home = () => {
 
   const user = useSelector((state) => state.auth?.user);
 
-   useEffect(() => {
+   /* ================= FETCH DATA (fallback for client-side navigation) ================= */
+  useEffect(() => {
+    // Only fetch if no initial data (client-side navigation fallback)
+    if (initialCategories.length === 0) {
       const fetchCategories = async () => {
         try {
           const res = await axios.get(
@@ -148,24 +151,28 @@ const Home = () => {
       };
   
       fetchCategories();
-    }, []);
+    }
+  }, [initialCategories.length]);
 
 
 
   useEffect(() => {
-    const getBlogs = async () => {
-      try {
-        const res = await axios.get(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/post/posts`
-        );
-        setBlogs(res.data);
-      } catch (err) {
-        console.log(err);
-      }
-    };
+    // Only fetch if no initial data (client-side navigation fallback)
+    if (initialBlogs.length === 0) {
+      const getBlogs = async () => {
+        try {
+          const res = await axios.get(
+            `${process.env.NEXT_PUBLIC_API_URL}/api/post/posts`
+          );
+          setBlogs(res.data);
+        } catch (err) {
+          console.log(err);
+        }
+      };
 
-    getBlogs();
-  }, []);
+      getBlogs();
+    }
+  }, [initialBlogs.length]);
 
 
   /* ================= FILTER ================= */
