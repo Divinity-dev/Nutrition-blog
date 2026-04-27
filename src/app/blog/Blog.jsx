@@ -48,44 +48,49 @@ export const Card = ({ item, formatDate, format }) => (
 );
 
 /* ================= BLOG ================= */
-const Blog = () => {
-  const [blogs, setBlogs] = useState([]);
+const Blog = ({ blogs: initialBlogs = [], categories: initialCategories = [] }) => {
+  const [blogs, setBlogs] = useState(initialBlogs);
   const [search, setSearch] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const [cats, setCats] = useState([]);
+  const [cats, setCats] = useState(initialCategories);
 
   const user = useSelector((state) => state.auth?.user);
 
-  /* ================= FETCH BLOGS ================= */
+  /* ================= FETCH BLOGS (fallback for client-side navigation) ================= */
   useEffect(() => {
-    const getBlogs = async () => {
-      try {
-        const res = await axios.get(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/post/posts`
-        );
-        setBlogs(res.data || []);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    getBlogs();
-  }, []);
+    // Only fetch if no initial data (client-side navigation fallback)
+    if (initialBlogs.length === 0) {
+      const getBlogs = async () => {
+        try {
+          const res = await axios.get(
+            `${process.env.NEXT_PUBLIC_API_URL}/api/post/posts`
+          );
+          setBlogs(res.data || []);
+        } catch (error) {
+          console.log(error);
+        }
+      };
+      getBlogs();
+    }
+  }, [initialBlogs.length]);
 
-    useEffect(() => {
-        const fetchCategories = async () => {
-          try {
-            const res = await axios.get(
-              `${process.env.NEXT_PUBLIC_API_URL}/api/category/categories`
-            );
-            setCats(res.data || []);
-          } catch (err) {
-            console.log(err);
-          }
-        };
-    
-        fetchCategories();
-      }, []);
+  useEffect(() => {
+    // Only fetch if no initial data (client-side navigation fallback)
+    if (initialCategories.length === 0) {
+      const fetchCategories = async () => {
+        try {
+          const res = await axios.get(
+            `${process.env.NEXT_PUBLIC_API_URL}/api/category/categories`
+          );
+          setCats(res.data || []);
+        } catch (err) {
+          console.log(err);
+        }
+      };
+      fetchCategories();
+    }
+  }, [initialCategories.length]);
 
   /* ================= FILTER ================= */
   const filteredBlogs = blogs.filter((item) => {
@@ -162,10 +167,11 @@ const Blog = () => {
     });
   };
 
-  console.log(blogs)
-
   /* ================= LOADING GUARD ================= */
-  if (!blogs.length) return <p className="p-10">Loading...</p>;
+  // Show loading only if no data available (handles both SSR and client states)
+  const isLoading = !blogs || !blogs.length;
+  
+  if (isLoading) return <p className="p-10">Loading...</p>;
 
   return (
     <div className="px-4 md:px-10 py-6 overflow-x-hidden">
