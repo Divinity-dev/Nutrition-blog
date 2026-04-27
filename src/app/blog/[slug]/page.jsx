@@ -1,14 +1,10 @@
 import BlogPostClient from "./BlogPostClient";
 
 export async function generateMetadata({ params }) {
-  const { slug } = await params;
-
-  const title = slug
-    ? slug.replace(/-/g, " ") + " | Nutriblog Hub"
-    : "Blog | Nutriblog Hub";
+  const { slug } = params;
 
   return {
-    title,
+    title: slug ? slug.replace(/-/g, " ") : "Blog",
     description: "Read this blog on Nutriblog Hub",
     alternates: {
       canonical: `https://www.nutribloghub.com/blog/${slug}`,
