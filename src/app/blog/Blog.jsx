@@ -39,7 +39,7 @@ export const Card = ({ item, formatDate, format }) => (
         {item.desc}
       </p>
 
-      <span className="text-blue-800 cursor-pointer mt-auto">
+      <span className="text-emerald-700 cursor-pointer mt-auto">
         Read more →
       </span>
     </div>
@@ -218,7 +218,7 @@ const Blog = ({ blogs: initialBlogs = [], categories: initialCategories = [] }) 
 
             <p>{featured.desc}</p>
 
-            <span className="text-blue-800">Read more →</span>
+            <span className="text-emerald-700">Read more →</span>
           </Link>
 
           {/* SIDE POSTS */}
@@ -232,7 +232,7 @@ const Blog = ({ blogs: initialBlogs = [], categories: initialCategories = [] }) 
                 variants={cardVariants}
                 className="flex flex-col sm:flex-row gap-4 p-5 border-2 border-gray-300 rounded-2xl"
               >
-                <Link href={`/blog/${item.slug}`}>
+                <Link href={`/blog/${item.slug}`} className="flex flex-col sm:flex-row gap-4 flex-1">
                 
                 <div className="relative w-full sm:w-1/2 h-40">
                   <Image
@@ -252,7 +252,7 @@ const Blog = ({ blogs: initialBlogs = [], categories: initialCategories = [] }) 
                     {formatDate(item.createdAt)} || {format(item.createdAt)}
                   </span>
 
-                  <span  className="text-blue-800">
+                  <span  className="text-emerald-700">
                     Read more →
                   </span>
                 </div>

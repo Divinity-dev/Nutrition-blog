@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
 import Image from "next/image";
 import { Card } from "../Blog";
@@ -10,47 +10,20 @@ import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSelector } from "react-redux";
 import axios from "axios";
-// import { useParams } from "next/navigation";
 import { format } from "timeago.js";
 import DeleteModal from "@/components/DeleteModal";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 
 
-const Page = ({ slug }) => {
+const Page = ({ slug, blog, blogs: initialBlogs }) => {
 
-  const [Blog, setBlog] = useState(null)
-  const [blogs, setBlogs] = useState([]);
+  const [Blog, setBlog] = useState(blog || null);
+  const [blogs, setBlogs] = useState(initialBlogs || []);
   const [openDelete, setOpenDelete] = useState(false);
-const [loading, setLoading] = useState(false);
-// const  {slug } = useParams();
+  const [loading, setLoading] = useState(false);
 
-
-  useEffect(() => {
-  const getBlogs = async () => {
-    try {
-      const blogs = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/post/posts`);
-      setBlogs(blogs.data);
-    } catch (error) {
-      console.log(error)
-    }
-  }
-getBlogs();
-}, []);
-  useEffect(()=>{
-    const getBlog = async ()=>{
-      try {
-        const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/post/${slug}`)
-        setBlog(res.data)
-             
-      } catch (error) {
-        console.log(error)
-      }
-    };
-    getBlog()
-  }, [slug])
-
-const title = Blog?.title || "";
+  const title = Blog?.title || "";
 
   const currentUrl =
   typeof window !== "undefined" ? window.location.href : "";
@@ -246,9 +219,9 @@ if (!Blog) {
           .getElementById(`section-${index}`)
           ?.scrollIntoView({ behavior: "smooth" })
       }
-      className="flex gap-2 items-center mb-2 cursor-pointer hover:text-blue-600 transition"
+      className="flex gap-2 items-center mb-2 cursor-pointer hover:text-emerald-600 transition"
     >
-      <div className="w-2 h-2 bg-blue-950 rounded-sm" />
+      <div className="w-2 h-2 bg-emerald-950 rounded-sm" />
       {item.header}
     </div>
   ))}
