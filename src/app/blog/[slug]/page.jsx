@@ -1,6 +1,8 @@
 import BlogPostClient from "./BlogPostClient";
 import axios from "axios";
 
+export const dynamic = 'force-dynamic';
+
 async function getBlog(slug) {
   try {
     const res = await axios.get(
