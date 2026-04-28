@@ -2,6 +2,8 @@
 import Blog from "./Blog";
 import axios from "axios";
 
+export const dynamic = 'force-dynamic';
+
 export const metadata = {
   title: "Nutrition Blog | Healthy Eating Tips & Guides",
   description:

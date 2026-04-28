@@ -1,6 +1,8 @@
 import Home from "./Home";
 import axios from "axios";
 
+export const dynamic = 'force-dynamic';
+
 export const metadata = {
   title: "Nutriblog Hub | Nutrition, Healthy Eating & Wellness",
   description:
