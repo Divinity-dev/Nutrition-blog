@@ -102,7 +102,7 @@ const Card = ({ item, formatDate, format }) => (
           {item.desc}
         </p>
 
-        <span className="text-blue-700 text-sm mt-2">
+        <span className="text-emerald-700 text-sm mt-2">
           Read more →
         </span>
       </div>
