@@ -14,20 +14,26 @@ const CreateBlog = () => {
   const [cat, setCat] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
-  const [Blog, setBlog] = useState({})
+  const [blog, setBlog] = useState({});
   const searchParams = useSearchParams();
-  const [refresh, setRefresh] = useState(false)
-const slug = searchParams.get("slug");
+  const [refresh, setRefresh] = useState(false);
+  const slug = searchParams.get("slug");
 
-const initialValues = React.useMemo(() => ({
-  title: Blog?.title || "",
-  image: Blog?.image || "",
-  desc: Blog?.desc || "",
-  categories: Blog?.categories || [],
-  sections: Blog?.content?.length
-    ? Blog.content
-    : [{ header: "", text: "" }],
-}), [Blog]);
+  const initialValues = React.useMemo(() => {
+    const initialCategory = Array.isArray(blog?.categories)
+      ? blog.categories[0] || ""
+      : blog?.categories || "";
+
+    return {
+      title: blog?.title || "",
+      image: blog?.image || "",
+      desc: blog?.desc || "",
+      categories: initialCategory,
+      sections: blog?.content?.length
+        ? blog.content
+        : [{ header: "", text: "" }],
+    };
+  }, [blog]);
 
 
   const uploadImageToCloudinary = async (file) => {
@@ -61,22 +67,22 @@ const initialValues = React.useMemo(() => ({
   }, [refresh]);
 
    useEffect(()=>{
-      const getBlog = async ()=>{
+      const getBlog = async () => {
         if (!slug) return;
         try {
-          const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/post/${slug}`)
-          setBlog(res.data)
-          console.log(res.data)
+          const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/post/${slug}`);
+          setBlog(res.data);
+          console.log(res.data);
         } catch (error) {
-          console.log(error)
+          console.log(error);
         }
       };
-      getBlog()
-    }, [slug])
+      getBlog();
+    }, [slug]);
 
-    if (slug && !Blog._id) {
-  return <div className="p-10">Loading...</div>;
-}
+    if (slug && !blog._id) {
+      return <div className="p-10">Loading...</div>;
+    }
 
   return (
     <div className="min-h-screen bg-gray-50 py-10 px-4">
