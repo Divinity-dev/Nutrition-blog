@@ -144,7 +144,6 @@ const initialValues = React.useMemo(() => ({
 
   try {
     setSubmitting(true);
-
     slug
       ? await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/api/post/${slug}`, payload)
       : await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/post/create`, payload);
@@ -152,7 +151,7 @@ const initialValues = React.useMemo(() => ({
     toast.success(slug ? "Blog updated!" : "Blog published!");
     router.push("/");
   } catch (err) {
-    console.log(err);
+     console.log("FULL ERROR:", err.response?.data || err.message);
     toast.error("Failed to publish blog");
   } finally {
     setSubmitting(false);

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect} from "react";
 import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
 import Image from "next/image";
 import { Card } from "../Blog";
@@ -14,6 +14,8 @@ import { format } from "timeago.js";
 import DeleteModal from "@/components/DeleteModal";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
+
+
 
 
 const Page = ({ slug, blog, blogs: initialBlogs }) => {
@@ -118,6 +120,29 @@ const handleDelete = async () => {
   }
 };
 
+useEffect(() => {
+  const container = document.getElementById("kit-form-container");
+  if (!container) return;
+
+  // IMPORTANT: prevent multiple loads
+  if (window.__KIT_LOADED__) return;
+  window.__KIT_LOADED__ = true;
+
+  const script = document.createElement("script");
+  script.src = "https://nutriblog-hub.kit.com/f8cbc25278/index.js";
+  script.async = true;
+  script.setAttribute("data-uid", "f8cbc25278");
+
+  container.appendChild(script); // 👈 KEY CHANGE (NOT body)
+
+  return () => {
+    container.innerHTML = ""; // clean removal
+    window.__KIT_LOADED__ = false;
+  };
+}, []);
+
+
+
 if (!Blog) {
   return <div className="text-center py-20">Loading...</div>;
 }
@@ -162,6 +187,8 @@ if (!Blog) {
           <h1 className="text-2xl md:text-4xl font-bold text-gray-900">
             {Blog?.title}
           </h1>
+
+     <div id="kit-form-container" />
 
           <p className="text-gray-700 text-sm md:text-base">
             {Blog?.desc}
@@ -277,10 +304,7 @@ if (!Blog) {
             >
               {blogs?.slice(status, status + 3).map((item) => (
                 <div key={item._id}>
-                  <Link href={`/blog/${item.slug}`}
-                 >
-                  <Card item={item} format={format} formatDate={formatDate}/>
-                  </Link>
+                <Card item={item} format={format} formatDate={formatDate}/>
                 </div>
               ))}
             </motion.div>
@@ -302,6 +326,7 @@ if (!Blog) {
   onDelete={handleDelete}
   loading={loading}
 />
+
     </div>
   );
 };
