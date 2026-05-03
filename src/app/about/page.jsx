@@ -1,9 +1,22 @@
 "use client";
 
 import React from "react";
+import Head from "next/head";
 
 const AboutPage = () => {
   return (
+    <>
+    <Head>
+        <title>About Us | NutriBlog</title>
+        <meta
+          name="description"
+          content="Learn more about NutriBlog and our mission to simplify nutrition and healthy living."
+        />
+        <link
+          rel="canonical"
+          href="https://www.nutribloghub.com/about"
+        />
+      </Head>
     <div className="max-w-5xl mx-auto px-6 py-16 text-gray-800">
 
       {/* Hero Section */}
@@ -81,6 +94,7 @@ const AboutPage = () => {
       </div>
 
     </div>
+    </>
   );
 };
 

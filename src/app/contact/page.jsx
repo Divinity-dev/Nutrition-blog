@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import emailjs from "@emailjs/browser";
+import Head from "next/head";
 
 export default function ContactPage() {
  const [form, setForm] = useState({
@@ -51,6 +52,18 @@ message: form.message,
   setLoading(false);
 };
   return (
+<>
+      <Head>
+        <title>Contact Us | NutriBlog</title>
+        <meta
+          name="description"
+          content="For Questions, feedback, or business inquiries — we’re always open to hearing from you"
+        />
+        <link
+          rel="canonical"
+          href="https://www.nutribloghub.com/contact"
+        />
+      </Head>
     <div className="min-h-screen bg-linear-to-b from-gray-50 to-white px-6 py-20">
       <div className="max-w-6xl mx-auto">
         
@@ -168,6 +181,7 @@ message: form.message,
         </div>
       </div>
     </div>
+    </>
   );
 }
 
