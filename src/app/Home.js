@@ -232,7 +232,7 @@ const formatDate = (date) => {
 };
 
   return (
-    <motion.div initial="hidden" animate="visible" className="px-4 md:px-10 py-8">
+    <motion.div initial="hidden" animate="visible" className="px-4 md:px-10 py-8  overflow-x-hidden">
 
       {/* HERO */}
       <Hero latest={latest} />
