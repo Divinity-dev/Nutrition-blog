@@ -127,10 +127,12 @@ const Blog = ({ blogs: initialBlogs = [], categories: initialCategories = [] }) 
 
   const handleNext = () => {
     setCurrentPage((prev) => Math.min(prev + 1, totalPages));
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handlePrev = () => {
     setCurrentPage((prev) => Math.max(prev - 1, 1));
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   /* ================= DATA SPLITS ================= */
