@@ -58,6 +58,7 @@ const Page = ({ slug, blog, blogs: initialBlogs }) => {
     if (status + 3 < blogs.length) {
       setDirection(1);
       setStatus((prev) => prev + 1);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 
@@ -65,6 +66,7 @@ const Page = ({ slug, blog, blogs: initialBlogs }) => {
     if (status > 0) {
       setDirection(-1);
       setStatus((prev) => prev - 1);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 
