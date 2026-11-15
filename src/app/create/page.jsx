@@ -116,7 +116,8 @@ const CreateBlog = () => {
           try {
             await axios.post(
               `${process.env.NEXT_PUBLIC_API_URL}/api/category/create`,
-              values
+              values,
+              { withCredentials: true }
             );
             resetForm();
             setCat(false);
@@ -152,8 +153,8 @@ const CreateBlog = () => {
     setSubmitting(true);
 
     slug
-      ? await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/api/post/${slug}`, payload)
-      : await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/post/create`, payload);
+      ? await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/api/post/${slug}`, payload, { withCredentials: true })
+      : await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/post/create`, payload, { withCredentials: true });
 
     toast.success(slug ? "Blog updated!" : "Blog published!");
     router.push("/");
