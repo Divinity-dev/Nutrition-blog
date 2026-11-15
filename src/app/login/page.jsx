@@ -90,6 +90,10 @@ export default function LoginPage() {
                 <ErrorMessage name="password" component="p" className="mt-1 text-xs text-red-600" />
               </div>
 
+              <div className="text-right -mt-2">
+                <Link href="/forgot-password" className="text-sm font-semibold text-orange-700 hover:underline">Forgot password?</Link>
+              </div>
+
               {errorMessage && <p role="alert" className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">{errorMessage}</p>}
 
               <button
