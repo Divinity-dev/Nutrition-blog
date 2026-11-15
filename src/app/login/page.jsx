@@ -27,14 +27,14 @@ const handleSubmit = async (values, { setSubmitting }) => {
   try {
     const { email, password } = values
     setErrorMsg('')
-    const res = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/user/login`, { email, password })
+    const res = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/user/login`, { email, password }, { withCredentials: true })
 
     dispatch(login(res.data))
     router.push('/')
-   console.log(res.data)
+
   } catch (error) {
     setErrorMsg(error.response?.data?.message || 'Login failed')
-    console.log(error)
+
   } finally {
     setSubmitting(false)
   }
