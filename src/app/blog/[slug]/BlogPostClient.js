@@ -106,7 +106,8 @@ const handleDelete = async () => {
     setLoading(true);
 
     await axios.delete(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/post/${Blog?._id}`
+      `${process.env.NEXT_PUBLIC_API_URL}/api/post/${Blog?._id}`,
+      { withCredentials: true }
     );
 
     toast.success("Blog deleted successfully");
@@ -131,7 +132,7 @@ if (!Blog) {
     <KeyboardBackspaceIcon className="cursor-pointer" />
   </Link>
 
-  {user && (
+  {user?.role === "admin" && (
     <div className="flex gap-3">
       
       <Link href={`/create?slug=${slug}`}>
