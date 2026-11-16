@@ -54,10 +54,10 @@ const Hero = ({ latest }) => {
 
         <div className="flex gap-3 mt-4">
           <Link
-            href={`/blog/${featured?.slug}`}
+            href={featured?.slug ? `/blog/${featured.slug}` : "/blog"}
             className="bg-black text-white px-5 py-3 rounded-xl hover:bg-gray-800 transition"
           >
-            Read Featured
+            {featured?.slug ? "Read Featured" : "Read Blog"}
           </Link>
 
           <Link
