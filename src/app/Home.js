@@ -72,7 +72,7 @@ const Hero = ({ latest }) => {
       {featured && (
         <div className="flex-1 relative h-72 md:h-96 rounded-2xl overflow-hidden">
           <Image
-            src={featured.image}
+            src={featured.image || "/images/nutriblog-default.svg"}
             fill
             className="object-cover"
             alt="featured"
@@ -88,7 +88,7 @@ const Card = ({ item, formatDate, format }) => (
   <Link href={`/blog/${item.slug}`} >
     <div className="border rounded-2xl overflow-hidden hover:shadow-lg transition bg-white h-full">
       <div className="relative w-full h-52">
-        <Image src={item.image} fill className="object-cover" alt="blog" />
+        <Image src={item.image || "/images/nutriblog-default.svg"} fill className="object-cover" alt="blog" />
       </div>
 
       <div className="p-4 flex flex-col gap-2">
