@@ -19,7 +19,7 @@ export const Card = ({ item, formatDate, format }) => (
 
     <div className="w-full h-48 md:h-56 lg:h-64 relative">
       <Image
-        src={item.image || "/placeholder.jpg"}
+        src={item.image || "/images/nutriblog-default.svg"}
         fill
         className="object-cover rounded-2xl"
         alt="blog image"
@@ -203,7 +203,7 @@ const Blog = ({ blogs: initialBlogs = [], categories: initialCategories = [] }) 
           >
             <div className="relative w-full h-64">
               <Image
-                src={featured.image || "/placeholder.jpg"}
+                src={featured.image || "/images/nutriblog-default.svg"}
                 fill
                 className="object-cover rounded-xl"
                 alt="blog image"
@@ -238,7 +238,7 @@ const Blog = ({ blogs: initialBlogs = [], categories: initialCategories = [] }) 
                 
                 <div className="relative w-full sm:w-1/2 h-40">
                   <Image
-                    src={item.image || "/placeholder.jpg"}
+                    src={item.image || "/images/nutriblog-default.svg"}
                     fill
                     className="object-cover rounded-lg"
                     alt="blog image"
