@@ -59,8 +59,7 @@ export default function PrivacyPolicy() {
 
       <h2 className="text-xl font-semibold mt-8 mb-3">5. Email Communication</h2>
       <p className="mb-6">
-        If you contact us or subscribe, you may receive emails. You can unsubscribe
-        at any time. We do not sell or share your email for marketing purposes.
+        If you subscribe to new article notifications, we use your email address only to send those notifications. We ask you to confirm your email before activating the subscription. Every notification includes an unsubscribe link, and you can opt out at any time. We do not sell subscriber email addresses.
       </p>
 
       <h2 className="text-xl font-semibold mt-8 mb-3">6. Data Protection</h2>

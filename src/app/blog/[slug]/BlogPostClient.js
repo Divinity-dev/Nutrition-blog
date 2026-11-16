@@ -14,6 +14,7 @@ import { format } from "timeago.js";
 import DeleteModal from "@/components/DeleteModal";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
+import CommentSection from "@/components/CommentSection";
 
 
 const Page = ({ slug, blog, blogs: initialBlogs }) => {
@@ -179,12 +180,17 @@ if (!Blog) {
 
           <div className="relative w-full h-52 md:h-80">
             <Image
-              src={Blog?.image || "/placeholder.jpg"}
+              src={Blog?.image || "/images/nutriblog-default.svg"}
               fill
               className="object-cover rounded-2xl"
               alt=""
             />
           </div>
+          {Blog?.imageCredit?.provider === "Pexels" && (
+            <p className="text-xs text-gray-500">
+              Photo by <a href={Blog.imageCredit.photographerUrl || Blog.imageCredit.photoUrl} target="_blank" rel="noopener noreferrer" className="underline">{Blog.imageCredit.photographer}</a> via <a href="https://www.pexels.com/" target="_blank" rel="noopener noreferrer" className="underline">Pexels</a>.
+            </p>
+          )}
         </div>
       </motion.div>
 
@@ -253,6 +259,8 @@ if (!Blog) {
 </div>
         </motion.div>
       </div>
+
+      <CommentSection slug={slug} />
 
       {/* RELATED POSTS */}
       <div className="w-full max-w-6xl mx-auto mt-12 flex items-center gap-3 md:gap-4">

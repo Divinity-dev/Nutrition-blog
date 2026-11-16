@@ -34,7 +34,7 @@ async function getAllBlogs() {
 }
 
 export async function generateMetadata({ params }) {
-  const { slug } = params;
+  const { slug } = await params;
   
   // Try to get blog, but don't fail if it returns 404
   let blog = null;
@@ -45,8 +45,8 @@ export async function generateMetadata({ params }) {
   }
 
   return {
-    title: blog?.title || (slug ? slug.replace(/-/g, " ") : "Blog"),
-    description: blog?.desc || "Read this blog on Nutriblog Hub",
+    title: blog?.seoTitle || blog?.title || (slug ? slug.replace(/-/g, " ") : "Blog"),
+    description: blog?.seoDescription || blog?.desc || "Read this blog on Nutriblog Hub",
     alternates: {
       canonical: `https://www.nutribloghub.com/blog/${slug}`,
     },

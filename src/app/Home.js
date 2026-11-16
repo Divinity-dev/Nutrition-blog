@@ -54,10 +54,10 @@ const Hero = ({ latest }) => {
 
         <div className="flex gap-3 mt-4">
           <Link
-            href={`/blog/${featured?.slug}`}
+            href={featured?.slug ? `/blog/${featured.slug}` : "/blog"}
             className="bg-black text-white px-5 py-3 rounded-xl hover:bg-gray-800 transition"
           >
-            Read Featured
+            {featured?.slug ? "Read Featured" : "Read Blog"}
           </Link>
 
           <Link
@@ -72,7 +72,7 @@ const Hero = ({ latest }) => {
       {featured && (
         <div className="flex-1 relative h-72 md:h-96 rounded-2xl overflow-hidden">
           <Image
-            src={featured.image}
+            src={featured.image || "/images/nutriblog-default.svg"}
             fill
             className="object-cover"
             alt="featured"
@@ -88,7 +88,7 @@ const Card = ({ item, formatDate, format }) => (
   <Link href={`/blog/${item.slug}`} >
     <div className="border rounded-2xl overflow-hidden hover:shadow-lg transition bg-white h-full">
       <div className="relative w-full h-52">
-        <Image src={item.image} fill className="object-cover" alt="blog" />
+        <Image src={item.image || "/images/nutriblog-default.svg"} fill className="object-cover" alt="blog" />
       </div>
 
       <div className="p-4 flex flex-col gap-2">
@@ -117,21 +117,25 @@ const Home = ({ blogs: initialBlogs = [], categories: initialCategories = [] }) 
   const [search, setSearch] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const [status, setStatus]= useState(false)
-  const [email, setEmail] = useState('')
+  const [status, setStatus] = useState(false)
+  const [email, setEmail] = useState("")
+  const [submitting, setSubmitting] = useState(false)
   const [cats, setCats] = useState(initialCategories);
   
-  const handleSubmit = async (e)=>{
+  const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/subscribers/subscribe`,{email})
-      toast(res.data)
-      setStatus(!status)
+      setSubmitting(true);
+      const res = await axios.post(process.env.NEXT_PUBLIC_API_URL + "/api/subscribers/subscribe", { email, source: "homepage" });
+      toast.success(res.data?.message || "Please check your email to confirm your subscription.");
+      setEmail("");
+      setStatus(false);
     } catch (error) {
-      console.log(error)
-      toast(error.message)
+      toast.error(error.response?.data?.message || "Unable to subscribe right now. Please try again.");
+    } finally {
+      setSubmitting(false);
     }
-  }
+  };
 
   const user = useSelector((state) => state.auth?.user);
 
@@ -374,21 +378,25 @@ const formatDate = (date) => {
         className="mt-16 bg-gray-900 text-white p-10 rounded-2xl text-center"
       >
         <h2 className="text-2xl font-bold mb-2">
-          Get Weekly Nutrition Tips
+          Get New Article Alerts
         </h2>
 
         <p className="text-gray-300 mb-6">
-          Join our newsletter and improve your health.
+          Get practical nutrition and healthy-living articles straight to your inbox.
         </p>
 
         <button onClick={()=>{setStatus(!status)}} className="bg-white text-black px-6 py-3 rounded-xl">
           Subscribe
         </button>
 
-          {status && <form className="flex flex-col sm:flex-row gap-2 mt-4 w-2/5 md:w-1/5 items-center mx-auto"
+          {status && (
+          <>
+            <form className="mx-auto mt-4 flex w-full max-w-xl flex-col items-center gap-2 sm:flex-row"
           onSubmit={handleSubmit}>
             <input
               type="email"
+              required
+              value={email}
               onChange={(e)=>{setEmail(e.target.value)}}
               placeholder="Enter your email"
               className="px-3 py-2 rounded-md text-black w-full bg-white"
@@ -397,9 +405,12 @@ const formatDate = (date) => {
               type="submit"
               className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md"
             >
-              Subscribe
+              {submitting ? "Submitting..." : "Subscribe"}
             </button>
-          </form>}
+          </form>
+            <p className="mt-3 text-xs text-gray-300">We’ll send a confirmation email first. Unsubscribe whenever you like.</p>
+          </>
+        )}
       </motion.div>
 
     </motion.div>
