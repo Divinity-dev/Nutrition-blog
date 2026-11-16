@@ -8,6 +8,7 @@ const CommentSection = ({ slug }) => {
   const [comments, setComments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
   const [form, setForm] = useState({ name: "", email: "", body: "" });
 
   const loadComments = async () => {
@@ -26,6 +27,7 @@ const CommentSection = ({ slug }) => {
   }, [slug]);
 
   const handleChange = (event) => {
+    setSuccessMessage("");
     setForm((current) => ({ ...current, [event.target.name]: event.target.value }));
   };
 
@@ -41,7 +43,14 @@ const CommentSection = ({ slug }) => {
         `${process.env.NEXT_PUBLIC_API_URL}/api/comments/post/${encodeURIComponent(slug)}`,
         { ...form, body: form.body.trim() }
       );
-      toast.success(response.data?.message || "Your comment was submitted for review.");
+      if (response.data?.comment) {
+        setComments((current) => [response.data.comment, ...current]);
+      } else {
+        await loadComments();
+      }
+      const message = response.data?.message || "Your comment has been published.";
+      setSuccessMessage(message);
+      toast.success(message);
       setForm((current) => ({ ...current, body: "" }));
     } catch (error) {
       toast.error(error.response?.data?.message || "Unable to submit your comment.");
@@ -53,7 +62,7 @@ const CommentSection = ({ slug }) => {
   return (
     <section className="max-w-4xl mx-auto mt-14 border-t pt-10">
       <h2 className="text-2xl font-bold text-gray-900">Comments ({comments.length})</h2>
-      <p className="text-sm text-gray-500 mt-2">Join the conversation. Comments are reviewed before they appear publicly.</p>
+      <p className="text-sm text-gray-500 mt-2">Join the conversation. Your comment appears immediately after posting.</p>
 
       <form onSubmit={handleSubmit} className="mt-6 rounded-2xl border bg-gray-50 p-5 md:p-6 space-y-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -77,6 +86,12 @@ const CommentSection = ({ slug }) => {
           </button>
         </div>
       </form>
+
+      {successMessage && (
+        <div role="status" aria-live="polite" className="mt-4 rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-900">
+          <strong>Published.</strong> {successMessage}
+        </div>
+      )}
 
       <div className="mt-8 space-y-4">
         {loading ? <p className="text-gray-500">Loading comments...</p> : comments.length === 0 ? (

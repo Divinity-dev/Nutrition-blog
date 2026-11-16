@@ -20,6 +20,7 @@ const CreateBlog = () => {
   const [submitting, setSubmitting] = useState(false);
   const [generatingAI, setGeneratingAI] = useState(false);
   const [searchingPexels, setSearchingPexels] = useState(false);
+  const [generatingAIImage, setGeneratingAIImage] = useState(false);
   const [pexelsPhotos, setPexelsPhotos] = useState([]);
   const [blog, setBlog] = useState(null);
   const [refreshCategories, setRefreshCategories] = useState(false);
@@ -35,6 +36,7 @@ const CreateBlog = () => {
     title: blog?.title || "",
     image: blog?.image || "",
     imageCredit: blog?.imageCredit || null,
+    imageSource: blog?.imageSource || "manual",
     desc: blog?.desc || "",
     categories: Array.isArray(blog?.categories) ? blog.categories[0]?._id || blog.categories[0] || "" : blog?.categories || "",
     sections: blog?.content?.length ? blog.content : [{ header: "", text: "" }],
@@ -175,6 +177,7 @@ const CreateBlog = () => {
             title: values.title,
             image: values.image,
             imageCredit: values.imageCredit || null,
+            imageSource: values.imageSource || "manual",
             desc: values.desc,
             categories: values.categories ? [values.categories] : [],
             content: values.sections,
@@ -251,6 +254,7 @@ const CreateBlog = () => {
                       const imageUrl = await uploadImageToCloudinary(file);
                       setFieldValue("image", imageUrl);
                       setFieldValue("imageCredit", null);
+                      setFieldValue("imageSource", "manual");
                       setPexelsPhotos([]);
                       toast.success("Featured image uploaded.");
                     } catch {
@@ -277,15 +281,43 @@ const CreateBlog = () => {
                       <p className="font-semibold text-emerald-950">Find a free stock image</p>
                       <p className="text-xs text-emerald-900">Search Pexels for a landscape photo that matches this article.</p>
                     </div>
-                    <button type="button" onClick={() => findFeaturedImages(values, setFieldValue)} disabled={searchingPexels} className="rounded-lg bg-emerald-800 px-4 py-2 text-sm font-semibold text-white disabled:opacity-60">
-                      {searchingPexels ? "Searching..." : "Search Pexels"}
-                    </button>
+                    <div className="flex flex-wrap gap-2">
+                      <button type="button" onClick={() => findFeaturedImages(values, setFieldValue)} disabled={searchingPexels} className="rounded-lg bg-emerald-800 px-4 py-2 text-sm font-semibold text-white disabled:opacity-60">
+                        {searchingPexels ? "Searching..." : "Search Pexels"}
+                      </button>
+                      <button
+                        type="button"
+                        disabled={generatingAIImage || !values.title?.trim()}
+                        onClick={async () => {
+                          try {
+                            setGeneratingAIImage(true);
+                            const response = await axios.post(
+                              API + "/api/ai/generate-image",
+                              { prompt: values.title },
+                              { withCredentials: true }
+                            );
+                            setFieldValue("image", response.data.image);
+                            setFieldValue("imageSource", "ai");
+                            setFieldValue("imageCredit", null);
+                            toast.success("AI featured image generated and saved.");
+                          } catch (error) {
+                            toast.error(error.response?.data?.message || "AI image generation failed. You can still save the article using an image from an earlier post.");
+                          } finally {
+                            setGeneratingAIImage(false);
+                          }
+                        }}
+                        className="rounded-lg border border-emerald-800 px-4 py-2 text-sm font-semibold text-emerald-900 disabled:opacity-60"
+                      >
+                        {generatingAIImage ? "Generating..." : "Generate AI image"}
+                      </button>
+                    </div>
                   </div>
                   {pexelsPhotos.length > 0 && (
                     <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
                       {pexelsPhotos.map((photo) => (
                         <button key={photo.id} type="button" onClick={() => {
                           setFieldValue("image", photo.image);
+                          setFieldValue("imageSource", "pexels");
                           setFieldValue("imageCredit", {
                             provider: "Pexels",
                             photographer: photo.photographer,
