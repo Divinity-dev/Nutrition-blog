@@ -14,6 +14,8 @@ const CreateBlog = () => {
   const [cat, setCat] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [aiTopic, setAiTopic] = useState("");
+  const [aiGenerating, setAiGenerating] = useState(false);
   const [blog, setBlog] = useState({});
   const searchParams = useSearchParams();
   const [refresh, setRefresh] = useState(false);
@@ -168,6 +170,55 @@ const CreateBlog = () => {
         >
           {({ values, setFieldValue }) => (
             <Form className="flex flex-col gap-6">
+
+              <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-5 flex flex-col gap-3">
+                <div>
+                  <h2 className="text-lg font-bold text-emerald-950">Create an article with AI</h2>
+                  <p className="mt-1 text-sm text-emerald-900">
+                    Enter a topic and Gemini will prepare the title, description and article sections for you.
+                    You can edit everything before publishing.
+                  </p>
+                </div>
+                <input
+                  value={aiTopic}
+                  onChange={(event) => setAiTopic(event.target.value)}
+                  maxLength={300}
+                  placeholder="e.g. Healthy Nigerian breakfast ideas for busy mornings"
+                  className="w-full rounded-lg border border-emerald-200 bg-white p-3"
+                />
+                <div className="flex flex-wrap items-center gap-3">
+                  <button
+                    type="button"
+                    disabled={aiGenerating || aiTopic.trim().length < 5}
+                    onClick={async () => {
+                      try {
+                        setAiGenerating(true);
+                        const response = await axios.post(
+                          process.env.NEXT_PUBLIC_API_URL + "/api/ai/generate",
+                          { topic: aiTopic.trim(), audience: "general readers", tone: "friendly and practical", length: "long" },
+                          { withCredentials: true }
+                        );
+                        const article = response.data;
+                        setFieldValue("title", article.title || "");
+                        setFieldValue("desc", article.desc || "");
+                        setFieldValue("sections", Array.isArray(article.content) && article.content.length
+                          ? article.content
+                          : [{ header: "Introduction", text: "" }]);
+                        setFieldValue("image", "");
+                        toast.success("AI article generated. Review and edit it before publishing.");
+                      } catch (error) {
+                        toast.error(error.response?.data?.message || "AI could not generate the article. Please try again.");
+                      } finally {
+                        setAiGenerating(false);
+                      }
+                    }}
+                    className="rounded-lg bg-emerald-700 px-5 py-3 font-semibold text-white hover:bg-emerald-800 disabled:cursor-not-allowed disabled:opacity-50"
+                  >
+                    {aiGenerating ? "Generating article..." : "Generate article with AI"}
+                  </button>
+                  <span className="text-xs text-emerald-900">AI-generated content is editable and should be reviewed before publishing.</span>
+                </div>
+              </div>
 
               {/* ================= MAIN INFO CARD ================= */}
               <div className="bg-white shadow-sm rounded-2xl p-6 flex flex-col gap-4 border">
