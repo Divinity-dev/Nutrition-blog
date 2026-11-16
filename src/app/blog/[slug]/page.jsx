@@ -34,7 +34,7 @@ async function getAllBlogs() {
 }
 
 export async function generateMetadata({ params }) {
-  const { slug } = params;
+  const { slug } = await params;
   
   // Try to get blog, but don't fail if it returns 404
   let blog = null;
