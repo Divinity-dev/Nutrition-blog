@@ -8,6 +8,7 @@ const CommentSection = ({ slug }) => {
   const [comments, setComments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
+  const [pendingMessage, setPendingMessage] = useState("");
   const [form, setForm] = useState({ name: "", email: "", body: "" });
 
   const loadComments = async () => {
@@ -26,6 +27,7 @@ const CommentSection = ({ slug }) => {
   }, [slug]);
 
   const handleChange = (event) => {
+    setPendingMessage("");
     setForm((current) => ({ ...current, [event.target.name]: event.target.value }));
   };
 
@@ -41,7 +43,9 @@ const CommentSection = ({ slug }) => {
         `${process.env.NEXT_PUBLIC_API_URL}/api/comments/post/${encodeURIComponent(slug)}`,
         { ...form, body: form.body.trim() }
       );
-      toast.success(response.data?.message || "Your comment was submitted for review.");
+      const message = response.data?.message || "Your comment was submitted and is awaiting moderation.";
+      setPendingMessage(message);
+      toast.success(message);
       setForm((current) => ({ ...current, body: "" }));
     } catch (error) {
       toast.error(error.response?.data?.message || "Unable to submit your comment.");
@@ -77,6 +81,12 @@ const CommentSection = ({ slug }) => {
           </button>
         </div>
       </form>
+
+      {pendingMessage && (
+        <div role="status" aria-live="polite" className="mt-4 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
+          <strong>Comment received.</strong> {pendingMessage}
+        </div>
+      )}
 
       <div className="mt-8 space-y-4">
         {loading ? <p className="text-gray-500">Loading comments...</p> : comments.length === 0 ? (
