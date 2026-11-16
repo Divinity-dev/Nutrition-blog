@@ -408,7 +408,9 @@ const formatDate = (date) => {
               {submitting ? "Submitting..." : "Subscribe"}
             </button>
           </form>
-          <p className="mt-3 text-xs text-gray-300">We’ll send a confirmation email first. Unsubscribe whenever you like.</p> }
+            <p className="mt-3 text-xs text-gray-300">We’ll send a confirmation email first. Unsubscribe whenever you like.</p>
+          </>
+        )}
       </motion.div>
 
     </motion.div>
