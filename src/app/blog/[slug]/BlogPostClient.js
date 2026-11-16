@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
 import Image from "next/image";
 import { Card } from "../Blog";
@@ -23,8 +23,48 @@ const Page = ({ slug, blog, blogs: initialBlogs }) => {
   const [blogs, setBlogs] = useState(initialBlogs || []);
   const [openDelete, setOpenDelete] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [visitorId, setVisitorId] = useState("");
+  const [likesCount, setLikesCount] = useState(0);
+  const [liked, setLiked] = useState(false);
+  const [likeLoading, setLikeLoading] = useState(false);
 
   const title = Blog?.title || "";
+
+  useEffect(() => {
+    if (!Blog?._id) return;
+    let active = true;
+    let id = window.localStorage.getItem("nutriblog-like-visitor");
+    if (!id) {
+      id = window.crypto?.randomUUID?.() || `visitor-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+      window.localStorage.setItem("nutriblog-like-visitor", id);
+    }
+    setVisitorId(id);
+    axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/post/${Blog._id}/likes`, { params: { visitorId: id } })
+      .then((response) => {
+        if (!active) return;
+        setLikesCount(response.data?.likesCount || 0);
+        setLiked(Boolean(response.data?.liked));
+      })
+      .catch(() => {});
+    return () => { active = false; };
+  }, [Blog?._id]);
+
+  const handleLike = async () => {
+    if (!visitorId || likeLoading) return;
+    try {
+      setLikeLoading(true);
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/post/${Blog._id}/like`,
+        { visitorId }
+      );
+      setLikesCount(response.data?.likesCount || 0);
+      setLiked(Boolean(response.data?.liked));
+    } catch {
+      toast.error("Unable to update your like. Please try again.");
+    } finally {
+      setLikeLoading(false);
+    }
+  };
 
   const currentUrl =
   typeof window !== "undefined" ? window.location.href : "";
@@ -257,6 +297,16 @@ if (!Blog) {
     </a>
   ))}
 </div>
+          <button
+            type="button"
+            onClick={handleLike}
+            disabled={!visitorId || likeLoading}
+            aria-pressed={liked}
+            className={`mt-5 inline-flex items-center gap-2 rounded-full border px-5 py-2.5 text-sm font-semibold transition disabled:opacity-50 ${liked ? "border-rose-200 bg-rose-50 text-rose-700" : "border-gray-200 bg-white text-gray-700 hover:border-rose-200 hover:text-rose-700"}`}
+          >
+            <span aria-hidden="true">{liked ? "♥" : "♡"}</span>
+            {liked ? "Liked" : "Like this article"} · {likesCount}
+          </button>
         </motion.div>
       </div>
 
