@@ -8,7 +8,7 @@ const CommentSection = ({ slug }) => {
   const [comments, setComments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
-  const [pendingMessage, setPendingMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
   const [form, setForm] = useState({ name: "", email: "", body: "" });
 
   const loadComments = async () => {
@@ -27,7 +27,7 @@ const CommentSection = ({ slug }) => {
   }, [slug]);
 
   const handleChange = (event) => {
-    setPendingMessage("");
+    setSuccessMessage("");
     setForm((current) => ({ ...current, [event.target.name]: event.target.value }));
   };
 
@@ -43,8 +43,13 @@ const CommentSection = ({ slug }) => {
         `${process.env.NEXT_PUBLIC_API_URL}/api/comments/post/${encodeURIComponent(slug)}`,
         { ...form, body: form.body.trim() }
       );
-      const message = response.data?.message || "Your comment was submitted and is awaiting moderation.";
-      setPendingMessage(message);
+      if (response.data?.comment) {
+        setComments((current) => [response.data.comment, ...current]);
+      } else {
+        await loadComments();
+      }
+      const message = response.data?.message || "Your comment has been published.";
+      setSuccessMessage(message);
       toast.success(message);
       setForm((current) => ({ ...current, body: "" }));
     } catch (error) {
@@ -57,7 +62,7 @@ const CommentSection = ({ slug }) => {
   return (
     <section className="max-w-4xl mx-auto mt-14 border-t pt-10">
       <h2 className="text-2xl font-bold text-gray-900">Comments ({comments.length})</h2>
-      <p className="text-sm text-gray-500 mt-2">Join the conversation. Comments are reviewed before they appear publicly.</p>
+      <p className="text-sm text-gray-500 mt-2">Join the conversation. Your comment appears immediately after posting.</p>
 
       <form onSubmit={handleSubmit} className="mt-6 rounded-2xl border bg-gray-50 p-5 md:p-6 space-y-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -82,9 +87,9 @@ const CommentSection = ({ slug }) => {
         </div>
       </form>
 
-      {pendingMessage && (
-        <div role="status" aria-live="polite" className="mt-4 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
-          <strong>Comment received.</strong> {pendingMessage}
+      {successMessage && (
+        <div role="status" aria-live="polite" className="mt-4 rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-900">
+          <strong>Published.</strong> {successMessage}
         </div>
       )}
 
