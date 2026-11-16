@@ -389,7 +389,9 @@ const formatDate = (date) => {
           Subscribe
         </button>
 
-          {status && (\n          <>\n            <form className="mx-auto mt-4 flex w-full max-w-xl flex-col items-center gap-2 sm:flex-row"
+          {status && (
+          <>
+            <form className="mx-auto mt-4 flex w-full max-w-xl flex-col items-center gap-2 sm:flex-row"
           onSubmit={handleSubmit}>
             <input
               type="email"
