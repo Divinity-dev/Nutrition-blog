@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" role="img" aria-labelledby="title desc">
+  <title id="title">NutriBlogHub featured image</title>
+  <desc id="desc">A calm green illustration representing fresh, healthy food.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f2f5e9"/><stop offset="1" stop-color="#dce9d5"/></linearGradient>
+    <linearGradient id="leaf" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#4f8b58"/><stop offset="1" stop-color="#245b3d"/></linearGradient>
+  </defs>
+  <rect width="1200" height="675" fill="url(#bg)"/>
+  <circle cx="950" cy="110" r="180" fill="#ffffff" opacity=".28"/>
+  <circle cx="180" cy="590" r="210" fill="#ffffff" opacity=".22"/>
+  <g transform="translate(600 305)">
+    <ellipse cx="0" cy="105" rx="245" ry="82" fill="#ffffff" opacity=".72"/>
+    <ellipse cx="0" cy="96" rx="205" ry="62" fill="#d7e4cb"/>
+    <path d="M-10 110C-150 55-150-100-35-165C42-85 56 28-10 110Z" fill="url(#leaf)"/>
+    <path d="M-10 110C15-15 42-115 80-185" fill="none" stroke="#d9ead1" stroke-width="9" stroke-linecap="round"/>
+    <path d="M8 95C130 52 205-30 178-135C67-122 0-18 8 95Z" fill="#79a96c"/>
+    <path d="M14 88C74 10 125-48 178-135" fill="none" stroke="#e6f0df" stroke-width="8" stroke-linecap="round"/>
+    <path d="M-28 105C-95 72-165 35-178-50C-92-62-24 5-28 105Z" fill="#9fbd82"/>
+    <path d="M-30 96C-80 35-125-8-178-50" fill="none" stroke="#edf4e7" stroke-width="7" stroke-linecap="round"/>
+  </g>
+  <text x="600" y="535" text-anchor="middle" font-family="Arial, sans-serif" font-size="46" font-weight="700" fill="#244b35">NutriBlogHub</text>
+  <text x="600" y="580" text-anchor="middle" font-family="Arial, sans-serif" font-size="22" fill="#52705a" letter-spacing="4">NOURISH • LEARN • LIVE WELL</text>
+</svg>
