@@ -23,6 +23,21 @@ export default function AiSchedulePage() {
 
   const change = (event) => {
     const { name, value, type, checked } = event.target;
+    if (name === "frequency") {
+      setSettings((current) => {
+        const requiredCount = value === "weekly" ? 1 : value === "twiceWeekly" ? 2 : value === "threeTimesWeekly" ? 3 : null;
+        const defaultDays = value === "weekly" ? [current.dayOfWeek ?? 2] : value === "threeTimesWeekly" ? [1, 3, 5] : [2, 5];
+        const currentDays = current.daysOfWeek || [];
+        return {
+          ...current,
+          frequency: value,
+          daysOfWeek: requiredCount
+            ? (currentDays.length >= requiredCount ? currentDays.slice(0, requiredCount) : defaultDays)
+            : currentDays,
+        };
+      });
+      return;
+    }
     setSettings((current) => ({ ...current, [name]: type === "checkbox" ? checked : value }));
   };
 
