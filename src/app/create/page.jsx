@@ -19,6 +19,8 @@ const CreateBlog = () => {
   const [uploading, setUploading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [generatingAI, setGeneratingAI] = useState(false);
+  const [searchingPexels, setSearchingPexels] = useState(false);
+  const [pexelsPhotos, setPexelsPhotos] = useState([]);
   const [blog, setBlog] = useState(null);
   const [refreshCategories, setRefreshCategories] = useState(false);
   const [aiOptions, setAiOptions] = useState({
@@ -32,6 +34,7 @@ const CreateBlog = () => {
   const initialValues = useMemo(() => ({
     title: blog?.title || "",
     image: blog?.image || "",
+    imageCredit: blog?.imageCredit || null,
     desc: blog?.desc || "",
     categories: Array.isArray(blog?.categories) ? blog.categories[0]?._id || blog.categories[0] || "" : blog?.categories || "",
     sections: blog?.content?.length ? blog.content : [{ header: "", text: "" }],
@@ -75,6 +78,28 @@ const CreateBlog = () => {
     formData.append("upload_preset", "blog_upload");
     const response = await axios.post("https://api.cloudinary.com/v1_1/dwivnxusa/image/upload", formData);
     return response.data.secure_url;
+  };
+
+  const findFeaturedImages = async (values, setFieldValue) => {
+    const query = String(values.title || aiOptions.topic || values.desc || "").trim();
+    if (query.length < 2) {
+      toast.error("Generate an article or enter a title before searching for images.");
+      return;
+    }
+    try {
+      setSearchingPexels(true);
+      const response = await axios.post(
+        `${API}/api/ai/featured-images`,
+        { query },
+        { withCredentials: true }
+      );
+      setPexelsPhotos(response.data.photos || []);
+      if (!response.data.photos?.length) toast.info("No matching Pexels photos were found. Try a shorter or different search phrase.");
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Unable to search for featured images.");
+    } finally {
+      setSearchingPexels(false);
+    }
   };
 
   const generateWithAI = async (setFieldValue) => {
@@ -149,6 +174,7 @@ const CreateBlog = () => {
           const payload = {
             title: values.title,
             image: values.image,
+            imageCredit: values.imageCredit || null,
             desc: values.desc,
             categories: values.categories ? [values.categories] : [],
             content: values.sections,
@@ -224,6 +250,8 @@ const CreateBlog = () => {
                       setUploading(true);
                       const imageUrl = await uploadImageToCloudinary(file);
                       setFieldValue("image", imageUrl);
+                      setFieldValue("imageCredit", null);
+                      setPexelsPhotos([]);
                       toast.success("Featured image uploaded.");
                     } catch {
                       toast.error("Image upload failed.");
@@ -233,7 +261,47 @@ const CreateBlog = () => {
                     }
                   }} />
                 </label>
-                {values.image && <img src={values.image} className="h-48 w-full rounded-xl object-cover" alt="Article preview" />}
+                {values.image && (
+                  <div className="space-y-2">
+                    <img src={values.image} className="h-48 w-full rounded-xl object-cover" alt="Article featured image preview" />
+                    {values.imageCredit?.provider === "Pexels" && (
+                      <p className="text-xs text-gray-600">
+                        Photo by <a href={values.imageCredit.photographerUrl || values.imageCredit.photoUrl} target="_blank" rel="noopener noreferrer" className="underline">{values.imageCredit.photographer}</a> via <a href="https://www.pexels.com/" target="_blank" rel="noopener noreferrer" className="underline">Pexels</a>.
+                      </p>
+                    )}
+                  </div>
+                )}
+                <div className="rounded-xl border border-emerald-100 bg-emerald-50 p-4">
+                  <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                    <div>
+                      <p className="font-semibold text-emerald-950">Find a free stock image</p>
+                      <p className="text-xs text-emerald-900">Search Pexels for a landscape photo that matches this article.</p>
+                    </div>
+                    <button type="button" onClick={() => findFeaturedImages(values, setFieldValue)} disabled={searchingPexels} className="rounded-lg bg-emerald-800 px-4 py-2 text-sm font-semibold text-white disabled:opacity-60">
+                      {searchingPexels ? "Searching..." : "Search Pexels"}
+                    </button>
+                  </div>
+                  {pexelsPhotos.length > 0 && (
+                    <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
+                      {pexelsPhotos.map((photo) => (
+                        <button key={photo.id} type="button" onClick={() => {
+                          setFieldValue("image", photo.image);
+                          setFieldValue("imageCredit", {
+                            provider: "Pexels",
+                            photographer: photo.photographer,
+                            photographerUrl: photo.photographerUrl,
+                            photoUrl: photo.photoUrl,
+                          });
+                          toast.success("Featured image selected.");
+                        }} className={`overflow-hidden rounded-lg border-2 bg-white text-left ${values.image === photo.image ? "border-emerald-700" : "border-transparent"}`}>
+                          <img src={photo.image} alt={photo.alt} className="h-24 w-full object-cover" />
+                          <span className="block truncate p-2 text-xs text-gray-700">{photo.photographer}</span>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                  <p className="mt-3 text-xs text-emerald-900">Photos provided by <a href="https://www.pexels.com/" target="_blank" rel="noopener noreferrer" className="font-semibold underline">Pexels</a>. Photographer credit will appear with the published article.</p>
+                </div>
                 <Field as="textarea" name="desc" required placeholder="Short article description..." className="h-24 rounded-xl border p-3 outline-none focus:ring-2 focus:ring-emerald-700" />
                 <Field as="select" name="categories" className="rounded-xl border p-3">
                   <option value="">Select category</option>
