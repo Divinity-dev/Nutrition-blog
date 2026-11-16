@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { Download, Search, Users, Clock3, UserRoundCheck, ShieldAlert } from "lucide-react";
+import { Download, Search, Users, Clock3, UserRoundCheck } from "lucide-react";
 
 const emptyData = {
   subscribers: [],
@@ -11,21 +11,18 @@ const emptyData = {
   activeCount: 0,
   pendingCount: 0,
   unsubscribedCount: 0,
-  reviewCount: 0,
 };
 
 const statusStyles = {
   active: "bg-emerald-50 text-emerald-700 ring-emerald-600/20",
   pending: "bg-amber-50 text-amber-700 ring-amber-600/20",
   unsubscribed: "bg-slate-100 text-slate-600 ring-slate-500/20",
-  review_required: "bg-orange-50 text-orange-800 ring-orange-600/20",
 };
 
 const statusLabels = {
   active: "Confirmed",
   pending: "Awaiting confirmation",
   unsubscribed: "Unsubscribed",
-  review_required: "Review consent",
 };
 
 export default function AdminSubscribersPage() {
@@ -71,8 +68,8 @@ export default function AdminSubscribersPage() {
       ["Email", "Status", "Consent status", "Source", "Date added", "Confirmed date"],
       ...data.subscribers.map((item) => [
         item.email,
-        item.status || "review_required",
-        item.status === "active" ? "Confirmed" : item.status === "review_required" || !item.status ? "Needs review" : "Not confirmed",
+        item.status || "active",
+        !item.status || item.status === "active" ? "Confirmed" : item.status === "pending" ? "Awaiting confirmation" : "Unsubscribed",
         item.source || "Existing subscriber",
         item.createdAt ? new Date(item.createdAt).toISOString() : "",
         item.confirmedAt ? new Date(item.confirmedAt).toISOString() : "",
@@ -93,7 +90,6 @@ export default function AdminSubscribersPage() {
   const stats = [
     { label: "Confirmed subscribers", value: data.activeCount, icon: UserRoundCheck, tone: "text-emerald-700 bg-emerald-50" },
     { label: "Awaiting confirmation", value: data.pendingCount, icon: Clock3, tone: "text-amber-700 bg-amber-50" },
-    { label: "Consent review", value: data.reviewCount, icon: ShieldAlert, tone: "text-orange-700 bg-orange-50" },
     { label: "Unsubscribed", value: data.unsubscribedCount, icon: Users, tone: "text-slate-600 bg-slate-100" },
   ];
 
@@ -130,14 +126,6 @@ export default function AdminSubscribersPage() {
           ))}
         </div>
 
-        {data.reviewCount > 0 && (
-          <div className="mt-6 flex gap-3 rounded-2xl border border-orange-200 bg-orange-50 p-4 text-sm leading-6 text-orange-950">
-            <ShieldAlert className="mt-0.5 shrink-0 text-orange-700" size={20} />
-            <p>
-              <strong>Consent review needed:</strong> These older contacts were imported from the previous subscriber list. They are preserved, but article notifications are paused until each person confirms again through the website.
-            </p>
-          </div>
-        )}
 
         <section className="mt-8 overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-[0_8px_30px_rgba(15,23,42,0.04)]">
           <div className="flex flex-col gap-4 border-b border-slate-100 p-5 sm:flex-row sm:items-center sm:justify-between">
@@ -177,13 +165,13 @@ export default function AdminSubscribersPage() {
                 </thead>
                 <tbody className="divide-y divide-slate-100">
                   {filteredSubscribers.map((item) => {
-                    const status = item.status || "review_required";
+                    const status = item.status || "active";
                     return (
                       <tr key={item._id} className="transition hover:bg-slate-50/80">
                         <td className="whitespace-nowrap px-5 py-4 font-semibold text-slate-800">{item.email}</td>
                         <td className="px-5 py-4">
                           <span className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold ring-1 ring-inset ${statusStyles[status] || statusStyles.review_required}`}>
-                            {statusLabels[status] || "Review consent"}
+                            {statusLabels[status] || "Confirmed"}
                           </span>
                         </td>
                         <td className="px-5 py-4 text-slate-600">{item.source || "Existing subscriber"}</td>
