@@ -186,6 +186,11 @@ if (!Blog) {
               alt=""
             />
           </div>
+          {Blog?.imageCredit?.provider === "Pexels" && (
+            <p className="text-xs text-gray-500">
+              Photo by <a href={Blog.imageCredit.photographerUrl || Blog.imageCredit.photoUrl} target="_blank" rel="noopener noreferrer" className="underline">{Blog.imageCredit.photographer}</a> via <a href="https://www.pexels.com/" target="_blank" rel="noopener noreferrer" className="underline">Pexels</a>.
+            </p>
+          )}
         </div>
       </motion.div>
 
