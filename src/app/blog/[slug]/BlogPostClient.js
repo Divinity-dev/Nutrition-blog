@@ -14,7 +14,6 @@ import { format } from "timeago.js";
 import DeleteModal from "@/components/DeleteModal";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
-import CommentSection from "./CommentSection";
 
 
 const Page = ({ slug, blog, blogs: initialBlogs }) => {
@@ -254,8 +253,6 @@ if (!Blog) {
 </div>
         </motion.div>
       </div>
-
-      <CommentSection postId={Blog?._id} />
 
       {/* RELATED POSTS */}
       <div className="w-full max-w-6xl mx-auto mt-12 flex items-center gap-3 md:gap-4">
