@@ -5,8 +5,9 @@ import Link from "next/link";
 import axios from "axios";
 import { toast } from "react-toastify";
 
-const initial = { enabled: false, topicInstructions: "", frequency: "daily", dayOfWeek: 1, autoPublish: false, scheduleTime: "09:00" };
+const initial = { enabled: false, topicInstructions: "", frequency: "twiceWeekly", dayOfWeek: 2, daysOfWeek: [2, 5], autoPublish: false, scheduleTime: "09:00" };
 const weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+const toggleDay = (days, day) => days.includes(day) ? days.filter((item) => item !== day) : [...days, day].sort((a, b) => a - b);
 
 export default function AiSchedulePage() {
   const [settings, setSettings] = useState(initial);
@@ -27,6 +28,7 @@ export default function AiSchedulePage() {
 
   const save = async (event) => {
     event.preventDefault();
+    if (settings.frequency !== "daily" && (settings.daysOfWeek || []).length !== (settings.frequency === "weekly" ? 1 : settings.frequency === "twiceWeekly" ? 2 : 3)) { toast.error(`Select exactly ${settings.frequency === "weekly" ? "one" : settings.frequency === "twiceWeekly" ? "two" : "three"} publishing days.`); return; }
     if (settings.enabled && settings.topicInstructions.trim().length < 10) {
       toast.error("Add topic instructions before enabling the schedule.");
       return;
@@ -67,12 +69,10 @@ export default function AiSchedulePage() {
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <label className="block text-sm font-semibold">Frequency
               <select name="frequency" value={settings.frequency} onChange={change} className="mt-2 w-full rounded-xl border p-3 font-normal">
-                <option value="daily">Every day</option><option value="weekly">Once a week</option>
+                <option value="daily">Every day</option><option value="weekly">Once a week</option><option value="twiceWeekly">Twice a week</option><option value="threeTimesWeekly">Three times a week</option>
               </select>
             </label>
-            {settings.frequency === "weekly" && <label className="block text-sm font-semibold">Day of week
-              <select name="dayOfWeek" value={settings.dayOfWeek} onChange={change} className="mt-2 w-full rounded-xl border p-3 font-normal">{weekdays.map((day, index) => <option key={day} value={index}>{day}</option>)}</select>
-            </label>}
+            {settings.frequency !== "daily" && <div className="sm:col-span-2"><p className="text-sm font-semibold">Publishing days</p><div className="mt-2 grid grid-cols-2 gap-2 sm:grid-cols-4">{weekdays.map((day, index) => <label key={day} className="flex items-center gap-2 rounded-lg border p-3 text-sm"><input type="checkbox" checked={(settings.daysOfWeek || (settings.frequency === "weekly" ? [settings.dayOfWeek] : [2, 5])).includes(index)} onChange={() => setSettings((current) => ({ ...current, daysOfWeek: toggleDay(current.daysOfWeek || (current.frequency === "weekly" ? [current.dayOfWeek] : [2, 5]), index) }))} />{day}</label>)}</div><p className="mt-2 text-xs text-gray-500">Choose {settings.frequency === "weekly" ? "one day" : settings.frequency === "twiceWeekly" ? "two days" : settings.frequency === "threeTimesWeekly" ? "three days" : "your preferred days"}.</p></div>}
           </div>
 
           <div className="rounded-xl border p-4">
