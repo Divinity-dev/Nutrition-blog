@@ -177,7 +177,16 @@ const CreateBlog = () => {
               Publishing frequency
               <select
                 value={schedule.frequency || "twiceWeekly"}
-                onChange={(event) => setSchedule((current) => ({ ...current, frequency: event.target.value }))}
+                onChange={(event) => setSchedule((current) => {
+                  const frequency = event.target.value;
+                  const existingDays = current.daysOfWeek || [];
+                  const defaults = frequency === "weekly" ? [2] : frequency === "threeTimesWeekly" ? [1, 3, 5] : [2, 5];
+                  const requiredCount = frequency === "weekly" ? 1 : frequency === "twiceWeekly" ? 2 : frequency === "threeTimesWeekly" ? 3 : null;
+                  const daysOfWeek = requiredCount
+                    ? (existingDays.length >= requiredCount ? existingDays.slice(0, requiredCount) : defaults)
+                    : existingDays;
+                  return { ...current, frequency, daysOfWeek };
+                })}
                 className="mt-1 w-full rounded-lg border bg-white p-3 font-normal"
               >
                 <option value="daily">Every day</option>
