@@ -60,6 +60,7 @@ export default function Navbar() {
         { name: "AI Drafts", href: "/admin/drafts" },
         { name: "Comments", href: "/admin/comments" },
         { name: "AI Automation", href: "/admin/ai-schedule" },
+        { name: "Subscribers", href: "/admin/subscribers" },
       ]
     : [];
 
