@@ -180,7 +180,7 @@ if (!Blog) {
 
           <div className="relative w-full h-52 md:h-80">
             <Image
-              src={Blog?.image || "/placeholder.jpg"}
+              src={Blog?.image || "/images/nutriblog-default.svg"}
               fill
               className="object-cover rounded-2xl"
               alt=""
