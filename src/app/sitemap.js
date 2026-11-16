@@ -5,10 +5,13 @@ export default async function sitemap() {
     { url: `${baseUrl}/blog`, lastModified: new Date() },
   ];
 
-  // Sitemap generation must not fail the entire Next.js build when the
-  // backend preview is temporarily unavailable or returns an HTML error page.
+  // Keep sitemap generation resilient when the backend is unavailable.
   try {
-    const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL?.replace(/\\/+$/, "");
+    const configuredApiUrl = process.env.NEXT_PUBLIC_API_URL;
+    const apiBaseUrl = configuredApiUrl
+      ? configuredApiUrl.replace(/\/+$/, "")
+      : "";
+
     if (!apiBaseUrl) return entries;
 
     const res = await fetch(`${apiBaseUrl}/api/post/posts`, {
