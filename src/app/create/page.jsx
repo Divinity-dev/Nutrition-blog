@@ -16,6 +16,8 @@ const CreateBlog = () => {
   const [submitting, setSubmitting] = useState(false);
   const [aiTopic, setAiTopic] = useState("");
   const [aiGenerating, setAiGenerating] = useState(false);
+  const [schedule, setSchedule] = useState({ enabled: false, topicInstructions: "", frequency: "twiceWeekly", dayOfWeek: 2, daysOfWeek: [2, 5], autoPublish: false, scheduleTime: "09:00", timezone: "Africa/Lagos" });
+  const [scheduleSaving, setScheduleSaving] = useState(false);
   const [blog, setBlog] = useState({});
   const searchParams = useSearchParams();
   const [refresh, setRefresh] = useState(false);
@@ -52,6 +54,38 @@ const CreateBlog = () => {
   
   return res.data.secure_url;
 };
+
+  useEffect(() => {
+    const fetchSchedule = async () => {
+      try {
+        const response = await axios.get(
+          process.env.NEXT_PUBLIC_API_URL + "/api/ai/schedule",
+          { withCredentials: true }
+        );
+        setSchedule(response.data);
+      } catch {
+        // The article editor remains usable even if schedule settings are unavailable.
+      }
+    };
+    fetchSchedule();
+  }, []);
+
+  const saveSchedule = async () => {
+    try {
+      setScheduleSaving(true);
+      const response = await axios.put(
+        process.env.NEXT_PUBLIC_API_URL + "/api/ai/schedule",
+        schedule,
+        { withCredentials: true }
+      );
+      setSchedule(response.data);
+      toast.success("AI publishing schedule saved.");
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Unable to save the AI schedule.");
+    } finally {
+      setScheduleSaving(false);
+    }
+  };
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -111,6 +145,96 @@ const CreateBlog = () => {
           </button>
 
         </div>
+
+        <section className="mb-8 rounded-2xl border bg-white p-5 shadow-sm space-y-4">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <h2 className="text-xl font-bold text-gray-900">Automated AI publishing</h2>
+              <p className="mt-1 text-sm text-gray-500">Gemini can prepare articles on a schedule, even when you are away.</p>
+            </div>
+            <label className="flex items-center gap-2 text-sm font-semibold">
+              <input
+                type="checkbox"
+                checked={Boolean(schedule.enabled)}
+                onChange={(event) => setSchedule((current) => ({ ...current, enabled: event.target.checked }))}
+              />
+              Enable schedule
+            </label>
+          </div>
+          <label className="block text-sm font-medium text-gray-700">
+            Article topics and editorial instructions
+            <textarea
+              value={schedule.topicInstructions || ""}
+              onChange={(event) => setSchedule((current) => ({ ...current, topicInstructions: event.target.value }))}
+              maxLength={1200}
+              rows={3}
+              placeholder="e.g. Practical nutrition, healthy Nigerian meals, food safety, balanced diets and everyday wellness."
+              className="mt-1 w-full rounded-lg border p-3 font-normal"
+            />
+          </label>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <label className="block text-sm font-medium text-gray-700">
+              Publishing frequency
+              <select
+                value={schedule.frequency || "twiceWeekly"}
+                onChange={(event) => setSchedule((current) => ({ ...current, frequency: event.target.value }))}
+                className="mt-1 w-full rounded-lg border bg-white p-3 font-normal"
+              >
+                <option value="daily">Every day</option>
+                <option value="weekly">Once a week</option>
+                <option value="twiceWeekly">Twice a week</option>
+                <option value="threeTimesWeekly">Three times a week</option>
+              </select>
+            </label>
+            <div className="text-sm text-gray-700">
+              <p className="font-medium">Publishing time</p>
+              <p className="mt-1 rounded-lg border bg-gray-50 p-3">9:05 AM (Nigeria time)</p>
+              <p className="mt-1 text-xs text-gray-500">The scheduled check runs daily; selected days control when an article is created.</p>
+            </div>
+          </div>
+          {schedule.frequency !== "daily" && (
+            <div>
+              <p className="mb-2 text-sm font-medium text-gray-700">Choose publishing days</p>
+              <div className="flex flex-wrap gap-3">
+                {["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"].map((day, index) => (
+                  <label key={day} className="flex items-center gap-2 rounded-lg border px-3 py-2 text-sm">
+                    <input
+                      type="checkbox"
+                      checked={(schedule.daysOfWeek || []).includes(index)}
+                      onChange={(event) => setSchedule((current) => ({
+                        ...current,
+                        daysOfWeek: event.target.checked
+                          ? [...new Set([...(current.daysOfWeek || []), index])].sort((a, b) => a - b)
+                          : (current.daysOfWeek || []).filter((value) => value !== index),
+                      }))}
+                    />
+                    {day}
+                  </label>
+                ))}
+              </div>
+            </div>
+          )}
+          <label className="flex items-start gap-2 text-sm text-gray-700">
+            <input
+              type="checkbox"
+              checked={Boolean(schedule.autoPublish)}
+              onChange={(event) => setSchedule((current) => ({ ...current, autoPublish: event.target.checked }))}
+              className="mt-1"
+            />
+            <span><strong>Publish automatically.</strong> Leave unchecked to save each generated article as a draft for my review.</span>
+          </label>
+          <div className="flex justify-end">
+            <button
+              type="button"
+              onClick={saveSchedule}
+              disabled={scheduleSaving || (schedule.enabled && !schedule.topicInstructions?.trim())}
+              className="rounded-lg bg-gray-900 px-5 py-3 font-semibold text-white hover:bg-black disabled:opacity-50"
+            >
+              {scheduleSaving ? "Saving schedule..." : "Save AI schedule"}
+            </button>
+          </div>
+        </section>
+
           {cat && <Formik
         initialValues={{name:""}}
         className="mb-8"
