@@ -379,6 +379,30 @@ const CreateBlog = () => {
     }
   }}
 />
+<button
+  type="button"
+  disabled={!values.title?.trim() || aiGenerating}
+  onClick={async () => {
+    try {
+      setAiGenerating(true);
+      const response = await axios.post(
+        process.env.NEXT_PUBLIC_API_URL + "/api/ai/generate-image",
+        { prompt: values.title },
+        { withCredentials: true }
+      );
+      setFieldValue("image", response.data.image);
+      setFieldValue("imageSource", "ai");
+      toast.success("AI featured image generated and saved.");
+    } catch (error) {
+      toast.error(error.response?.data?.message || "AI image generation failed. You can still publish using an existing article image.");
+    } finally {
+      setAiGenerating(false);
+    }
+  }}
+  className="rounded-lg border border-emerald-700 px-4 py-3 text-sm font-semibold text-emerald-800 hover:bg-emerald-50 disabled:opacity-50"
+>
+  Generate free AI image
+</button>
 {values.image && (
   <img
     src={values.image}
