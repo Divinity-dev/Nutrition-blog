@@ -124,12 +124,12 @@ const Home = ({ blogs: initialBlogs = [], categories: initialCategories = [] }) 
   const handleSubmit = async (e)=>{
     e.preventDefault();
     try {
-      const res = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/subscribers/subscribe`,{email})
-      toast(res.data)
-      setStatus(!status)
+      const res = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/subscribers/subscribe`, { email, source: "homepage" })
+      toast.success(res.data?.message || "Please check your email to confirm your subscription.")
+      setEmail("")
+      setStatus(false)
     } catch (error) {
-      console.log(error)
-      toast(error.message)
+      toast.error(error.response?.data?.message || "Unable to subscribe right now. Please try again.")
     }
   }
 
@@ -389,6 +389,8 @@ const formatDate = (date) => {
           onSubmit={handleSubmit}>
             <input
               type="email"
+              required
+              value={email}
               onChange={(e)=>{setEmail(e.target.value)}}
               placeholder="Enter your email"
               className="px-3 py-2 rounded-md text-black w-full bg-white"
@@ -399,7 +401,7 @@ const formatDate = (date) => {
             >
               Subscribe
             </button>
-          </form>}
+          </form> }
       </motion.div>
 
     </motion.div>
