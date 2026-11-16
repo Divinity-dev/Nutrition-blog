@@ -45,8 +45,8 @@ export async function generateMetadata({ params }) {
   }
 
   return {
-    title: blog?.title || (slug ? slug.replace(/-/g, " ") : "Blog"),
-    description: blog?.desc || "Read this blog on Nutriblog Hub",
+    title: blog?.seoTitle || blog?.title || (slug ? slug.replace(/-/g, " ") : "Blog"),
+    description: blog?.seoDescription || blog?.desc || "Read this blog on Nutriblog Hub",
     alternates: {
       canonical: `https://www.nutribloghub.com/blog/${slug}`,
     },
