@@ -313,50 +313,67 @@ if (!Blog) {
       <CommentSection slug={slug} />
 
       {/* RELATED POSTS */}
-      <div className="w-full max-w-6xl mx-auto mt-12 flex items-center gap-3 md:gap-4">
-
-        {/* PREV */}
-        <button
-          onClick={handlePrev}
-          disabled={status === 0}
-          className="p-2 md:p-3 rounded-full border hover:bg-gray-100 disabled:opacity-30"
-        >
-          <ArrowBackIosNewIcon fontSize="small" />
-        </button>
-
-        {/* CARDS WITH ANIMATION */}
-        <div className="flex-1 overflow-hidden">
-          <AnimatePresence mode="wait" custom={direction}>
-            <motion.div
-              key={status}
-              variants={slide}
-              initial="hidden"
-              animate="visible"
-              exit="exit"
-              custom={direction}
-              className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6"
-            >
-              {blogs?.slice(status, status + 3).map((item) => (
-                <div key={item._id}>
-                  <Link href={`/blog/${item.slug}`}
-                 >
-                  <Card item={item} format={format} formatDate={formatDate}/>
-                  </Link>
-                </div>
-              ))}
-            </motion.div>
-          </AnimatePresence>
+      <section className="w-full max-w-6xl mx-auto mt-12">
+        <div className="flex items-end justify-between gap-4 mb-5">
+          <div>
+            <h2 className="text-xl md:text-2xl font-bold text-gray-900">Related articles</h2>
+            <p className="text-sm text-gray-500 mt-1 sm:hidden">Swipe to explore more articles</p>
+          </div>
         </div>
 
-        {/* NEXT */}
-        <button
-          onClick={handleNext}
-          disabled={status + 3 >= blogs.length}
-          className="p-2 md:p-3 rounded-full border hover:bg-gray-100 disabled:opacity-30"
+        {/* Mobile: one full-width card at a time, navigated with a horizontal swipe */}
+        <div
+          className="sm:hidden flex w-full gap-4 overflow-x-auto snap-x snap-mandatory scroll-smooth pb-3 touch-pan-x [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+          aria-label="Related articles. Swipe horizontally to browse."
         >
-          <ArrowForwardIosIcon fontSize="small" />
-        </button>
-      </div>
+          {blogs?.map((item) => (
+            <div key={item._id} className="w-full min-w-full shrink-0 snap-center">
+              <Card item={item} format={format} formatDate={formatDate} />
+            </div>
+          ))}
+        </div>
+
+        {/* Tablet and desktop: retain the three-card animated carousel with arrow controls */}
+        <div className="hidden sm:flex w-full items-center gap-3 md:gap-4">
+          <button
+            onClick={handlePrev}
+            disabled={status === 0}
+            aria-label="Previous related articles"
+            className="shrink-0 p-2 md:p-3 rounded-full border hover:bg-gray-100 disabled:opacity-30"
+          >
+            <ArrowBackIosNewIcon fontSize="small" />
+          </button>
+
+          <div className="flex-1 min-w-0 overflow-hidden">
+            <AnimatePresence mode="wait" custom={direction}>
+              <motion.div
+                key={status}
+                variants={slide}
+                initial="hidden"
+                animate="visible"
+                exit="exit"
+                custom={direction}
+                className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6"
+              >
+                {blogs?.slice(status, status + 3).map((item) => (
+                  <div key={item._id} className="min-w-0">
+                    <Card item={item} format={format} formatDate={formatDate} />
+                  </div>
+                ))}
+              </motion.div>
+            </AnimatePresence>
+          </div>
+
+          <button
+            onClick={handleNext}
+            disabled={status + 3 >= blogs.length}
+            aria-label="Next related articles"
+            className="shrink-0 p-2 md:p-3 rounded-full border hover:bg-gray-100 disabled:opacity-30"
+          >
+            <ArrowForwardIosIcon fontSize="small" />
+          </button>
+        </div>
+      </section>
      <DeleteModal
   open={openDelete}
   onClose={() => setOpenDelete(false)}
